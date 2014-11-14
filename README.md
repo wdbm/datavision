@@ -1,6 +1,6 @@
 # datavision
 
-Python print elegant
+Python data visualisation
 
 # prerequisites
 
