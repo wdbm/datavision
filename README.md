@@ -1,4 +1,9 @@
-datavision
-==========
+# datavision
 
-Python data visualisation
+Python print elegant
+
+# prerequisites
+
+## matplotlib
+
+    sudo pip install matplotlib
