@@ -73,14 +73,6 @@ class Matrix(list):
         # plot
         self._array = np.array(self)
         self._plotNumber         = shijian.uniqueNumber()
-        self._plotFigure, \
-        self._plotAxes           = plotList(
-                                       list       = self,
-                                       title      = self.title,
-                                       plotNumber = self._plotNumber,
-                                       plot       = False,
-                                       returnPlot = True
-                                   )
         # show or draw plot
         self._plotShown          = False
 
@@ -95,6 +87,14 @@ class Matrix(list):
             )
             plt.draw()
         else:
+            self._plotFigure, \
+            self._plotAxes       = plotList(
+                                       list       = self,
+                                       title      = self.title,
+                                       plotNumber = self._plotNumber,
+                                       plot       = False,
+                                       returnPlot = True
+                                )
             plt.figure(str(self._plotNumber))
             plt.show()
             self._plotShown = True
