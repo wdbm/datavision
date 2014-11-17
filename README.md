@@ -19,4 +19,4 @@ This package provides utilities for data visualisation. For example, it can visu
 
 ## shijian
 
-    - <https://github.com/wdbm/shijian>
+- <https://github.com/wdbm/shijian>
