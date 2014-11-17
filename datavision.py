@@ -28,7 +28,7 @@
 #                                                                              #
 ################################################################################
 
-version = "2014-11-17T1904Z"
+version = "2014-11-17T2334Z"
 
 import random
 import matplotlib.pyplot as plt
@@ -89,7 +89,7 @@ class Matrix(list):
         else:
             self._plotFigure, \
             self._plotAxes       = plotList(
-                                       list       = self,
+                                       listObject = self,
                                        title      = self.title,
                                        plotNumber = self._plotNumber,
                                        plot       = False,
@@ -117,7 +117,7 @@ class Matrix(list):
         self._plotShown = False
 
 def plotList(
-    list       = list,
+    listObject = None,
     title      = None,
     plotNumber = None,
     style      = "colormap",
@@ -129,47 +129,41 @@ def plotList(
     ):
     if not plotNumber:
         plotNumber = shijian.uniqueNumber()
-    # convert list to NumPy array
-    array = np.array(list)
-    dimensionality = len(array.shape)
-    if dimensionality == 2:
-        if style == "colormap":
-            # create axis labels
-            labelsColumn = []
-            labelsRow = []
-            for rowNumber in range(0, len(list)):
-                labelsRow.append(rowNumber + 1)
-                for columnNumber in range(0, len(list[rowNumber])):
-                    labelsColumn.append(columnNumber)
-            figure = plt.figure(str(plotNumber))
-            axes = figure.add_subplot(111)
-            colormap = axes.pcolor(array, cmap = plt.cm.Blues)
-            # major ticks at middle of each cell
-            axes.set_xticks(np.arange(array.shape[0]) + 0.5, minor = False)
-            axes.set_yticks(np.arange(array.shape[1]) + 0.5, minor = False)
-            # table-like display
-            axes.invert_yaxis()
-            axes.xaxis.tick_top()
-            axes.set_xticklabels(labelsRow, minor = False)
-            axes.set_yticklabels(labelsColumn, minor = False)
-            # LaTeX text
-            plt.rc('text', usetex = True)
-            plt.rc('font', family = 'serif')
-            # title
-            if title:
-                plt.title(title, y = 1.05)
-            # plot/return/save
-            if plot:
-                plt.show()
-            if returnPlot:
-                return(figure, axes)
-            if save:
-                fileNameProposed = shijian.proposeFileName(
-                    fileName  = fileName,
-                    overwrite = overwrite
-                )
-                plt.savefig(fileNameProposed)
-        else:
-            raise Exception
-    else:
-        raise Exception
+    if style == "colormap":
+        # convert list to NumPy array
+        array = np.array(listObject)
+        dimensionality = len(array.shape)
+        if dimensionality == 1:
+            array = np.array([listObject])
+        # create axis labels
+        labelsColumn = list(range(0, array.shape[1]))
+        labelsRow = list(range(0, array.shape[0]))
+        # create figure and axes
+        figure = plt.figure(str(plotNumber))
+        axes = figure.add_subplot(111)
+        colormap = axes.pcolor(array, cmap = plt.cm.Blues)
+        # major ticks at middle of each cell
+        axes.set_xticks(np.arange(array.shape[1]) + 0.5, minor = False)
+        axes.set_yticks(np.arange(array.shape[0]) + 0.5, minor = False)
+        # table-like display
+        axes.invert_yaxis()
+        axes.xaxis.tick_top()
+        axes.set_xticklabels(labelsColumn, minor = False)
+        axes.set_yticklabels(labelsRow, minor = False)
+        # LaTeX text
+        plt.rc('text', usetex = True)
+        plt.rc('font', family = 'serif')
+        # title
+        if title:
+            plt.title(title, y = 1.05)
+        # plot/return/save
+        if plot:
+            plt.show()
+        if returnPlot:
+            return(figure, axes)
+        if save:
+            fileNameProposed = shijian.proposeFileName(
+                fileName  = fileName,
+                overwrite = overwrite
+            )
+            plt.savefig(fileNameProposed)
