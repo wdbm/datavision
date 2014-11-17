@@ -15,3 +15,8 @@ This package provides utilities for data visualisation. For example, it can visu
 ## matplotlib
 
     sudo pip install matplotlib
+    sudo apt-get -y install python3-matplotlib
+
+## shijian
+
+    - <https://github.com/wdbm/shijian>

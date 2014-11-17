@@ -28,7 +28,7 @@
 #                                                                              #
 ################################################################################
 
-version = "2014-11-17T0015Z"
+version = "2014-11-17T1904Z"
 
 import random
 import matplotlib.pyplot as plt
@@ -78,7 +78,8 @@ class Matrix(list):
                                        list       = self,
                                        title      = self.title,
                                        plotNumber = self._plotNumber,
-                                       mode       = "return"
+                                       plot       = False,
+                                       returnPlot = True
                                    )
         # show or draw plot
         self._plotShown          = False
@@ -98,9 +99,17 @@ class Matrix(list):
             plt.show()
             self._plotShown = True
 
-    #def savePlot(self):
-    #    plt.figure(str(self._plotNumber))
-    #    # upcoming -- plt.savefig(filename)
+    def savePlot(
+        self,
+        fileName  = None,
+        overwrite = False
+        ):
+        plt.figure(str(self._plotNumber))
+        fileNameProposed = shijian.proposeFileName(
+            fileName  = fileName,
+            overwrite = overwrite
+        )
+        plt.savefig(fileNameProposed)
 
     def closePlot(self):
         plt.figure(str(self._plotNumber))
@@ -112,7 +121,11 @@ def plotList(
     title      = None,
     plotNumber = None,
     style      = "colormap",
-    mode       = "plot" # plot/return/save
+    fileName   = None,
+    overwrite  = False,
+    plot       = True,
+    returnPlot = False,
+    save       = False
     ):
     if not plotNumber:
         plotNumber = shijian.uniqueNumber()
@@ -146,14 +159,16 @@ def plotList(
             if title:
                 plt.title(title, y = 1.05)
             # plot/return/save
-            if mode == "plot":
+            if plot:
                 plt.show()
-            elif mode == "return":
+            if returnPlot:
                 return(figure, axes)
-            elif mode == "save":
-                raise Exception # upcoming -- plt.savefig(filename)
-            else:
-                raise Exception
+            if save:
+                fileNameProposed = shijian.proposeFileName(
+                    fileName  = fileName,
+                    overwrite = overwrite
+                )
+                plt.savefig(fileNameProposed)
         else:
             raise Exception
     else:
