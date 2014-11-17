@@ -4,10 +4,6 @@
 #                                                                              #
 ################################################################################
 #                                                                              #
-# version: 2014-11-14T1254Z                                                    #
-#                                                                              #
-################################################################################
-#                                                                              #
 # LICENCE INFORMATION                                                          #
 #                                                                              #
 # This program provides data visualisation utilities in Python.                #
@@ -32,37 +28,133 @@
 #                                                                              #
 ################################################################################
 
+version = "2014-11-17T0015Z"
+
+import random
 import matplotlib.pyplot as plt
+plt.ion()
 import numpy as np
+import shijian as shijian
+
+class Matrix(list):
+    
+    def __init__(
+        self,
+        *args,
+        title                    = None,
+        numberOfColumns          = 3,
+        numberOfRows             = 3,
+        element                  = 0.0,
+        randomise                = False,
+        randomiseLimitLower      = -0.2,
+        randomiseLimitUpper      = 0.2
+        ):
+        # list initialisation
+        super().__init__(self, *args)   
+        self.title               = title
+        self.numberOfColumns     = numberOfColumns
+        self.numberOfRows        = numberOfRows
+        self.element             = element
+        self.randomise           = randomise
+        self.randomiseLimitLower = randomiseLimitLower
+        self.randomiseLimitUpper = randomiseLimitUpper
+        # fill with default element
+        for column in range(self.numberOfColumns):
+            self.append([element] * self.numberOfRows)
+        # fill with pseudorandom elements
+        if self.randomise:
+            random.seed()
+            for row in range(self.numberOfRows):
+                for column in range(self.numberOfColumns):
+                    self[row][column] = random.uniform(
+                        self.randomiseLimitUpper,
+                        self.randomiseLimitLower
+                    )
+        # plot
+        self._array = np.array(self)
+        self._plotNumber         = shijian.uniqueNumber()
+        self._plotFigure, \
+        self._plotAxes           = plotList(
+                                       list       = self,
+                                       title      = self.title,
+                                       plotNumber = self._plotNumber,
+                                       mode       = "return"
+                                   )
+        # show or draw plot
+        self._plotShown          = False
+
+    def plot(self):
+        # display or redraw plot
+        if self._plotShown:
+            plt.figure(str(self._plotNumber))
+            self._array = np.array(self)
+            self._plotAxes.pcolor(
+                self._array,
+                cmap = plt.cm.Blues
+            )
+            plt.draw()
+        else:
+            plt.figure(str(self._plotNumber))
+            plt.show()
+            self._plotShown = True
+
+    #def savePlot(self):
+    #    plt.figure(str(self._plotNumber))
+    #    # upcoming -- plt.savefig(filename)
+
+    def closePlot(self):
+        plt.figure(str(self._plotNumber))
+        plt.close()
+        self._plotShown = False
 
 def plotList(
-    list,
-    style = "heatmap"
+    list       = list,
+    title      = None,
+    plotNumber = None,
+    style      = "colormap",
+    mode       = "plot" # plot/return/save
     ):
+    if not plotNumber:
+        plotNumber = shijian.uniqueNumber()
     # convert list to NumPy array
     array = np.array(list)
     dimensionality = len(array.shape)
     if dimensionality == 2:
-        if style == "heatmap":
+        if style == "colormap":
             # create axis labels
             labelsColumn = []
             labelsRow = []
-            for rowNumber in xrange(0, len(list)):
+            for rowNumber in range(0, len(list)):
                 labelsRow.append(rowNumber + 1)
-                for element in list[rowNumber]:
-                    labelsColumn.append(element)
-            fig, ax = plt.subplots()
-            heatmap = ax.pcolor(array, cmap = plt.cm.Blues)
+                for columnNumber in range(0, len(list[rowNumber])):
+                    labelsColumn.append(columnNumber)
+            figure = plt.figure(str(plotNumber))
+            axes = figure.add_subplot(111)
+            colormap = axes.pcolor(array, cmap = plt.cm.Blues)
             # major ticks at middle of each cell
-            ax.set_xticks(np.arange(array.shape[0]) + 0.5, minor = False)
-            ax.set_yticks(np.arange(array.shape[1]) + 0.5, minor = False)
+            axes.set_xticks(np.arange(array.shape[0]) + 0.5, minor = False)
+            axes.set_yticks(np.arange(array.shape[1]) + 0.5, minor = False)
             # table-like display
-            ax.invert_yaxis()
-            ax.xaxis.tick_top()
-            ax.set_xticklabels(labelsRow, minor = False)
-            ax.set_yticklabels(labelsColumn, minor = False)
-            plt.show()
+            axes.invert_yaxis()
+            axes.xaxis.tick_top()
+            axes.set_xticklabels(labelsRow, minor = False)
+            axes.set_yticklabels(labelsColumn, minor = False)
+            # LaTeX text
+            plt.rc('text', usetex = True)
+            plt.rc('font', family = 'serif')
+            # title
+            if title:
+                plt.title(title, y = 1.05)
+            # plot/return/save
+            if mode == "plot":
+                plt.show()
+            elif mode == "return":
+                return(figure, axes)
+            elif mode == "save":
+                raise Exception # upcoming -- plt.savefig(filename)
+            else:
+                raise Exception
         else:
-            Exception
+            raise Exception
     else:
-        Exception
+        raise Exception
