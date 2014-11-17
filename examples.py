@@ -43,8 +43,8 @@ def main():
     matrix = datavision.Matrix(
         title = "matrix",
         numberOfColumns = 50,
-        numberOfRows = 50,
-        randomise = True
+        numberOfRows    = 50,
+        randomise       = True
     )
     print(matrix)
     matrix.plot()
@@ -57,8 +57,8 @@ def main():
     matrix = datavision.Matrix(
         title = "matrix",
         numberOfColumns = 2,
-        numberOfRows = 2,
-        randomise = True
+        numberOfRows    = 2,
+        randomise       = True
     )
     for row in range(len(matrix)):
         for column in range(len(matrix[row])):
@@ -75,8 +75,8 @@ def main():
     matrix = datavision.Matrix(
         title = "matrix",
         numberOfColumns = 10,
-        numberOfRows = 10,
-        randomise = True
+        numberOfRows    = 10,
+        randomise       = True
     )
     for row in range(len(matrix)):
         for column in range(len(matrix[row])):
