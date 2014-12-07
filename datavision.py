@@ -28,8 +28,9 @@
 #                                                                              #
 ################################################################################
 
-version = "2014-11-17T2334Z"
+version = "2014-12-07T0151Z"
 
+import sys
 import random
 import matplotlib.pyplot as plt
 plt.ion()
@@ -167,3 +168,56 @@ def plotList(
                 overwrite = overwrite
             )
             plt.savefig(fileNameProposed)
+
+class Qunti(list):
+
+    def __init__(
+        self,
+        *args
+        ):
+        # list initialisation
+        if sys.version_info >= (3, 0):
+            super().__init__(*args)
+        else:
+            super(qunti, self).__init__(*args)
+    
+    def symmetricDifference(
+        self,
+        updateZus
+        ):
+        symmetricDifferenceSet = \
+            set(zu[0] for zu in self) ^ set(zu[0] for zu in updateZus)
+        return(
+            [zu for zu in self if zu[0] in symmetricDifferenceSet] +
+            [zu for zu in updateZus if zu[0] in symmetricDifferenceSet]
+        )
+
+    def intersection(
+        self,
+        updateZus
+        ):
+        intersectionSet = \
+            set(zu[0] for zu in self) & set(zu[0] for zu in updateZus)
+        return(
+            [zu for zu in self if zu[0] in intersectionSet] +
+            [zu for zu in updateZus if zu[0] in intersectionSet]
+        )
+
+    def update(
+        self,
+        updateZus
+        ):
+        selfUpdated = []
+        # Get the symmetric difference zus of the current zus and the update
+        # zus. Include the symmetric difference zus in the updated self zus.
+        symmetricDifference = self.symmetricDifference(updateZus)
+        symmetricDifferenceSet = set(zu[0] for zu in symmetricDifference)
+        selfUpdated.extend(symmetricDifference)
+        # Include all entries of the update zus not in the symmetric difference
+        # zus in the updated self zus.        
+        selfUpdated.extend(
+            [zu for zu in updateZus \
+            if zu[0] not in symmetricDifferenceSet]
+        )
+        # Update the self zus.
+        self.__init__(selfUpdated)

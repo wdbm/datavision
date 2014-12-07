@@ -6,6 +6,47 @@ import datavision as datavision
 
 def main():
 
+    input("\nPress Enter to continue.")
+
+    print("\nexample qunti update:")
+    a = datavision.Qunti(
+        [['alpha', '10'],
+         ['beta',  '20'],
+         ['gamma', '30'],
+         ['gamma', '15']]
+    )
+    b = datavision.Qunti(
+        [['delta', '40'],
+         ['alpha', '50']]
+    )
+    print("a = {qunti}".format(qunti = a))
+    print("b = {qunti}".format(qunti = b))
+    print("update of a with b:")
+    a.update(b)
+    print("a = {qunti}".format(qunti = a))
+
+    input("\nPress Enter to continue.")
+
+    print("\nexample qunti symmetric difference, intersection and update:")
+    a = datavision.Qunti(
+        [['alpha', '10'],
+         ['beta',  '20'],
+         ['gamma', '30'],
+         ['gamma', '15']]
+    )
+    b = datavision.Qunti([['delta', '40'], ['alpha', '50'], ['gamma', '25']])
+    print("a = {qunti}".format(qunti = a))
+    print("b = {qunti}".format(qunti = b))
+    print("symmetric difference of a and b:")
+    print(a.symmetricDifference(b))
+    print("intersection of a and b:")
+    print(a.intersection(b))
+    print("update of a with b:")
+    a.update(b)
+    print("a = {qunti}".format(qunti = a))
+
+    input("\nPress Enter to continue.\n")
+
     print("plot 3 x 3 list")
     matrix1 = [[ 1,  2,  3 ],
                [ 4,  5,  6 ],
