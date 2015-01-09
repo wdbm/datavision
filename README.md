@@ -35,7 +35,33 @@ python examples.py
 
 # introduction
 
-This package provides utilities for data visualisation. For example, it can visualise matrices as colormaps:
+## qunti and zus lists
+
+Qunti are lists that act as dictionaries that can contain duplicate keys and as sets for the purposes of enabling set-like operations for qunti objects, such as symmetric difference, intersection and "update" operations.
+
+```Python
+example qunti update:
+a = [['alpha', '10'], ['beta', '20'], ['gamma', '30'], ['gamma', '15']]
+b = [['delta', '40'], ['alpha', '50']]
+update of a with b:
+a = [['beta', '20'], ['gamma', '30'], ['gamma', '15'], ['delta', '40'], ['alpha', '50']]
+```
+
+```Python
+example qunti symmetric difference, intersection and update:
+a = [['alpha', '10'], ['beta', '20'], ['gamma', '30'], ['gamma', '15']]
+b = [['delta', '40'], ['alpha', '50'], ['gamma', '25']]
+symmetric difference of a and b:
+[['beta', '20'], ['delta', '40']]
+intersection of a and b:
+[['alpha', '10'], ['gamma', '30'], ['gamma', '15'], ['alpha', '50'], ['gamma', '25']]
+update of a with b:
+a = [['beta', '20'], ['delta', '40'], ['alpha', '50'], ['gamma', '25']]
+```
+
+## data visualisation
+
+This module provides utilities for data visualisation. For example, it can visualise matrices as colormaps:
 
 ![](images/image_1.png)
 ![](images/image_2.png)
