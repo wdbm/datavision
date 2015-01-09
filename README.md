@@ -4,6 +4,15 @@ Python data visualisation
 
 # quick start
 
+```Bash
+sudo apt-get -y install python3
+sudo apt-get -y install python3-matplotlib
+git clone https://github.com/wdbm/datavision.git
+cd datavision/
+wget https://raw.githubusercontent.com/wdbm/shijian/master/shijian.py
+python examples.py
+```
+
 ## setup
 
 ### Ubuntu
