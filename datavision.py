@@ -28,7 +28,7 @@
 #                                                                              #
 ################################################################################
 
-version = "2014-12-07T0151Z"
+version = "2015-04-30T0232Z"
 
 import sys
 import random
@@ -89,7 +89,7 @@ class Matrix(list):
             plt.draw()
         else:
             self._plotFigure, \
-            self._plotAxes       = plotList(
+            self._plotAxes       = plot_list(
                                        listObject = self,
                                        title      = self.title,
                                        plotNumber = self._plotNumber,
@@ -100,7 +100,7 @@ class Matrix(list):
             plt.show()
             self._plotShown = True
 
-    def savePlot(
+    def save_plot(
         self,
         fileName  = None,
         overwrite = False
@@ -112,12 +112,12 @@ class Matrix(list):
         )
         plt.savefig(fileNameProposed)
 
-    def closePlot(self):
+    def close_plot(self):
         plt.figure(str(self._plotNumber))
         plt.close()
         self._plotShown = False
 
-def plotList(
+def plot_list(
     listObject = None,
     title      = None,
     plotNumber = None,
@@ -169,6 +169,21 @@ def plotList(
             )
             plt.savefig(fileNameProposed)
 
+def list_quotient(
+    list_dividend = None,
+    list_divisor  = None
+    ):
+    [dividend / divisor for dividend, divisor in zip(
+        list_dividend,
+        list_divisor
+    )]
+
+def list_mean(
+    lists = None
+    ):
+    return([sum(element)/len(element) for element in zip(*lists)])
+
+
 class Qunti(list):
 
     def __init__(
@@ -181,7 +196,7 @@ class Qunti(list):
         else:
             super(qunti, self).__init__(*args)
     
-    def symmetricDifference(
+    def symmetric_difference(
         self,
         updateZus
         ):
@@ -210,7 +225,7 @@ class Qunti(list):
         selfUpdated = []
         # Get the symmetric difference zus of the current zus and the update
         # zus. Include the symmetric difference zus in the updated self zus.
-        symmetricDifference = self.symmetricDifference(updateZus)
+        symmetricDifference = self.symmetric_difference(updateZus)
         symmetricDifferenceSet = set(zu[0] for zu in symmetricDifference)
         selfUpdated.extend(symmetricDifference)
         # Include all entries of the update zus not in the symmetric difference

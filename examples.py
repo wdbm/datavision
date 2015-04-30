@@ -38,7 +38,7 @@ def main():
     print("a = {qunti}".format(qunti = a))
     print("b = {qunti}".format(qunti = b))
     print("symmetric difference of a and b:")
-    print(a.symmetricDifference(b))
+    print(a.symmetric_difference(b))
     print("intersection of a and b:")
     print(a.intersection(b))
     print("update of a with b:")
@@ -51,14 +51,14 @@ def main():
     matrix1 = [[ 1,  2,  3 ],
                [ 4,  5,  6 ],
                [ 7,  8,  9 ]]
-    datavision.plotList(listObject = matrix1)
+    datavision.plot_list(listObject = matrix1)
     
     print("plot 4 x 4 list")
     matrix2 = [[ 1,  2,  3,  4 ],
               [  5,  6,  7,  8 ],
               [  9, 10, 11, 12 ],
               [ 13, 14, 15, 16 ]]
-    datavision.plotList(listObject = matrix2)
+    datavision.plot_list(listObject = matrix2)
     
     print("plot 5 x 5 list")
     matrix3 = [[  1,  2,  3,  4,  5 ],
@@ -66,17 +66,17 @@ def main():
                [ 11, 12, 13, 14, 15 ],
                [ 16, 17, 18, 19, 20 ],
                [ 21, 22, 23, 24, 25 ]]
-    datavision.plotList(listObject = matrix3)
+    datavision.plot_list(listObject = matrix3)
 
     print("plot 1 x 3 list")
     matrix4 = [[1],
                [2],
                [3]]
-    datavision.plotList(listObject = matrix4)
+    datavision.plot_list(listObject = matrix4)
 
     print("plot 3-element list as 3 x 1 list")
     matrix5 = [1, 2, 3]
-    datavision.plotList(listObject = matrix5)
+    datavision.plot_list(listObject = matrix5)
 
     input("Press Enter to continue.")
 
@@ -92,7 +92,7 @@ def main():
 
     input("Press Enter to continue.")
 
-    matrix.closePlot()
+    matrix.close_plot()
     
     print("plot 2 x 2 matrix and display it changing in a loop")
     matrix = datavision.Matrix(
@@ -110,7 +110,7 @@ def main():
 
     input("Press Enter to continue.")
 
-    matrix.closePlot()
+    matrix.close_plot()
 
     print("plot 10 x 10 matrix and display it changing in a loop")
     matrix = datavision.Matrix(
@@ -126,7 +126,7 @@ def main():
             matrix.plot()
             #time.sleep(0.01)
     
-    matrix.closePlot()
+    matrix.close_plot()
 
     input("Press Enter to terminate.")
 
