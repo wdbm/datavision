@@ -1,12 +1,21 @@
 #!/usr/bin/env python
 
+import sys
 import time
 import random
 import datavision as datavision
 
+def pause(
+    text = "\nPress Enter to continue."
+    ):
+    if sys.version_info >= (3, 0):
+        input(text)
+    else:
+        raw_input(text)
+
 def main():
 
-    input("\nPress Enter to continue.")
+    pause("\nPress Enter to continue.")
 
     print("\nexample qunti update:")
     a = datavision.Qunti(
@@ -25,7 +34,7 @@ def main():
     a.update(b)
     print("a = {qunti}".format(qunti = a))
 
-    input("\nPress Enter to continue.")
+    pause("\nPress Enter to continue.")
 
     print("\nexample qunti symmetric difference, intersection and update:")
     a = datavision.Qunti(
@@ -45,7 +54,7 @@ def main():
     a.update(b)
     print("a = {qunti}".format(qunti = a))
 
-    input("\nPress Enter to continue.\n")
+    pause("\nPress Enter to continue.\n")
 
     print("plot 3 x 3 list")
     matrix1 = [[ 1,  2,  3 ],
@@ -78,7 +87,7 @@ def main():
     matrix5 = [1, 2, 3]
     datavision.plot_list(listObject = matrix5)
 
-    input("Press Enter to continue.")
+    pause("Press Enter to continue.")
 
     print("print and plot 10 x 10 matrix")
     matrix = datavision.Matrix(
@@ -90,7 +99,7 @@ def main():
     print(matrix)
     matrix.plot()
 
-    input("Press Enter to continue.")
+    pause("Press Enter to continue.")
 
     matrix.close_plot()
     
@@ -108,7 +117,7 @@ def main():
             matrix.plot()
             time.sleep(1)
 
-    input("Press Enter to continue.")
+    pause("Press Enter to continue.")
 
     matrix.close_plot()
 
@@ -128,7 +137,7 @@ def main():
     
     matrix.close_plot()
 
-    input("Press Enter to terminate.")
+    pause("Press Enter to terminate.")
 
 if __name__ == '__main__':
     main()

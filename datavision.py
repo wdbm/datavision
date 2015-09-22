@@ -8,7 +8,7 @@
 #                                                                              #
 # This program provides data visualisation utilities in Python.                #
 #                                                                              #
-# copyright (C) 2014 William Breaden Madden                                    #
+# copyright (C) 2014 2015 William Breaden Madden                               #
 #                                                                              #
 # This software is released under the terms of the GNU General Public License  #
 # version 3 (GPLv3).                                                           #
@@ -28,7 +28,7 @@
 #                                                                              #
 ################################################################################
 
-version = "2015-04-30T0232Z"
+version = "2015-09-22T1127Z"
 
 import sys
 import random
@@ -41,17 +41,20 @@ class Matrix(list):
     
     def __init__(
         self,
-        *args,
         title                    = None,
         numberOfColumns          = 3,
         numberOfRows             = 3,
         element                  = 0.0,
         randomise                = False,
         randomiseLimitLower      = -0.2,
-        randomiseLimitUpper      = 0.2
+        randomiseLimitUpper      = 0.2,
+        *args
         ):
         # list initialisation
-        super().__init__(self, *args)   
+        if sys.version_info >= (3, 0):
+            super().__init__(self, *args)
+        else:
+            super(Matrix, self).__init__(*args)        
         self.title               = title
         self.numberOfColumns     = numberOfColumns
         self.numberOfRows        = numberOfRows
@@ -194,7 +197,7 @@ class Qunti(list):
         if sys.version_info >= (3, 0):
             super().__init__(*args)
         else:
-            super(qunti, self).__init__(*args)
+            super(Qunti, self).__init__(*args)
     
     def symmetric_difference(
         self,
