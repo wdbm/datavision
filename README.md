@@ -5,33 +5,43 @@ Python data visualisation
 # quick start
 
 ```Bash
-sudo apt-get -y install python3
-sudo apt-get -y install python3-matplotlib
+sudo apt-get -y install python
+sudo apt-get -y install python-matplotlib
 git clone https://github.com/wdbm/datavision.git
 cd datavision/
 wget https://raw.githubusercontent.com/wdbm/shijian/master/shijian.py
-python examples.py
+python examples_1.py
+python examples_1.py
 ```
 
 ## setup
 
 ### Ubuntu
 
-    sudo apt-get -y install python3
-    sudo apt-get -y install python3-matplotlib
+```Bash
+sudo apt-get -y install python
+sudo apt-get -y install python3
+sudo apt-get -y install python-matplotlib
+sudo apt-get -y install python3-matplotlib
+```
 
 ### OS X
 
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    brew install python3
-    pip3 install matplotlib
+```Bash   
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install python3
+pip3 install matplotlib
+```
 
 ## run
 
-    git clone https://github.com/wdbm/datavision.git
-    cd datavision/
-    wget https://raw.githubusercontent.com/wdbm/shijian/master/shijian.py
-    python3 examples.py
+```Bash
+git clone https://github.com/wdbm/datavision.git
+cd datavision/
+wget https://raw.githubusercontent.com/wdbm/shijian/master/shijian.py
+python examples_1.py
+python examples_2.py
+```
 
 # introduction
 
@@ -74,22 +84,75 @@ a = [['beta', '20'], ['delta', '40'], ['alpha', '50'], ['gamma', '25']]
 
 ## data visualisation
 
-This module provides utilities for data visualisation. For example, it can visualise matrices as colormaps:
+Datavision provides utilities for data visualisation. It can visualise matrices as colormaps:
 
 ![](images/image_1.png)
 ![](images/image_2.png)
 ![](images/image_3.png)
 
+It can visualise graphs and histograms in a terminal:
+
+```
+   │                                                                            
+   ┼+79.548                                                                 ○   
+   │                                                                            
+   │                                                                ○           
+   │                                                                            
+   │                                                        ○                   
+   │                                                                            
+   │                                                ○                           
+   ◽       ◽       ◽                       ○                                    
+   │                       ◽       ○                                            
+   │                       ○       ◽                                            
+───○┼──────○───────○───────────────────────◽────────────────────────────────┼───
+   │ +0.046                                         ◽               +8.97638    
+   │                                                                            
+   │                                                        ◽                   
+   │                                                                            
+   │                                                                ◽           
+   ┼-48.228                                                                     
+   │                                                                        ◽   
+   │                                                                            
+```
+
+```
+                         │                        
+                         ┼+75503.2                
+                       ∘∘|∘                       
+                      ∘||||∘                      
+                      ||||||∘                     
+                     ∘|||||||                     
+                     ||||||||∘                    
+                    ∘|||||||||                    
+                    ||||||||||∘                   
+                   ∘|||||||||||                   
+                   |||||||||||∘                   
+                  ∘||||||||||||                   
+                  |||||||||||||∘                  
+                  ||||||||||||||∘                 
+                 ∘|||||||||||||||∘                
+                ∘|||||||||||||||||∘               
+               ∘|||||||||||||||||||∘              
+            ∘∘∘||||||||||┼+1603.2|||∘∘∘           
+──┼--------------------------------------------┼──
+   -4.69099              │              +4.6147   
+```
+
 # prerequisites
 
-## Python 3
+## Python 2 or Python 3
 
-    sudo apt-get -y install python3
+```Bash
+sudo apt-get -y install python
+sudo apt-get -y install python3
+```
 
 ## matplotlib
 
-    #sudo pip install matplotlib
-    sudo apt-get -y install python3-matplotlib
+```Bash
+sudo apt-get -y install python-matplotlib
+sudo apt-get -y install python3-matplotlib
+```
 
 ## shijian
 
