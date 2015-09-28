@@ -28,14 +28,14 @@
 #                                                                              #
 ################################################################################
 
-version = "2015-09-22T1127Z"
+version = "2015-09-28T1320Z"
 
 import sys
 import random
 import matplotlib.pyplot as plt
 plt.ion()
-import numpy as np
-import shijian as shijian
+import numpy
+import shijian
 
 class Matrix(list):
     
@@ -75,7 +75,7 @@ class Matrix(list):
                         self.randomiseLimitLower
                     )
         # plot
-        self._array = np.array(self)
+        self._array = numpy.array(self)
         self._plotNumber         = shijian.uniqueNumber()
         # show or draw plot
         self._plotShown          = False
@@ -84,7 +84,7 @@ class Matrix(list):
         # display or redraw plot
         if self._plotShown:
             plt.figure(str(self._plotNumber))
-            self._array = np.array(self)
+            self._array = numpy.array(self)
             self._plotAxes.pcolor(
                 self._array,
                 cmap = plt.cm.Blues
@@ -135,10 +135,10 @@ def plot_list(
         plotNumber = shijian.uniqueNumber()
     if style == "colormap":
         # convert list to NumPy array
-        array = np.array(listObject)
+        array = numpy.array(listObject)
         dimensionality = len(array.shape)
         if dimensionality == 1:
-            array = np.array([listObject])
+            array = numpy.array([listObject])
         # create axis labels
         labelsColumn = list(range(0, array.shape[1]))
         labelsRow = list(range(0, array.shape[0]))
@@ -147,8 +147,8 @@ def plot_list(
         axes = figure.add_subplot(111)
         colormap = axes.pcolor(array, cmap = plt.cm.Blues)
         # major ticks at middle of each cell
-        axes.set_xticks(np.arange(array.shape[1]) + 0.5, minor = False)
-        axes.set_yticks(np.arange(array.shape[0]) + 0.5, minor = False)
+        axes.set_xticks(numpy.arange(array.shape[1]) + 0.5, minor = False)
+        axes.set_yticks(numpy.arange(array.shape[0]) + 0.5, minor = False)
         # table-like display
         axes.invert_yaxis()
         axes.xaxis.tick_top()
