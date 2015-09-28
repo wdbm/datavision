@@ -28,12 +28,12 @@
 #                                                                              #
 ################################################################################
 
-version = "2015-09-28T1320Z"
+version = "2015-09-28T1323Z"
 
 import sys
 import random
-import matplotlib.pyplot as plt
-plt.ion()
+import matplotlib.pyplot
+matplotlib.pyplot.ion()
 import numpy
 import shijian
 
@@ -83,13 +83,13 @@ class Matrix(list):
     def plot(self):
         # display or redraw plot
         if self._plotShown:
-            plt.figure(str(self._plotNumber))
+            matplotlib.pyplot.figure(str(self._plotNumber))
             self._array = numpy.array(self)
             self._plotAxes.pcolor(
                 self._array,
-                cmap = plt.cm.Blues
+                cmap = matplotlib.pyplot.cm.Blues
             )
-            plt.draw()
+            matplotlib.pyplot.draw()
         else:
             self._plotFigure, \
             self._plotAxes       = plot_list(
@@ -99,8 +99,8 @@ class Matrix(list):
                                        plot       = False,
                                        returnPlot = True
                                 )
-            plt.figure(str(self._plotNumber))
-            plt.show()
+            matplotlib.pyplot.figure(str(self._plotNumber))
+            matplotlib.pyplot.show()
             self._plotShown = True
 
     def save_plot(
@@ -108,16 +108,16 @@ class Matrix(list):
         fileName  = None,
         overwrite = False
         ):
-        plt.figure(str(self._plotNumber))
+        matplotlib.pyplot.figure(str(self._plotNumber))
         fileNameProposed = shijian.proposeFileName(
             fileName  = fileName,
             overwrite = overwrite
         )
-        plt.savefig(fileNameProposed)
+        matplotlib.pyplot.savefig(fileNameProposed)
 
     def close_plot(self):
-        plt.figure(str(self._plotNumber))
-        plt.close()
+        matplotlib.pyplot.figure(str(self._plotNumber))
+        matplotlib.pyplot.close()
         self._plotShown = False
 
 def plot_list(
@@ -143,9 +143,9 @@ def plot_list(
         labelsColumn = list(range(0, array.shape[1]))
         labelsRow = list(range(0, array.shape[0]))
         # create figure and axes
-        figure = plt.figure(str(plotNumber))
+        figure = matplotlib.pyplot.figure(str(plotNumber))
         axes = figure.add_subplot(111)
-        colormap = axes.pcolor(array, cmap = plt.cm.Blues)
+        colormap = axes.pcolor(array, cmap = matplotlib.pyplot.cm.Blues)
         # major ticks at middle of each cell
         axes.set_xticks(numpy.arange(array.shape[1]) + 0.5, minor = False)
         axes.set_yticks(numpy.arange(array.shape[0]) + 0.5, minor = False)
@@ -155,14 +155,14 @@ def plot_list(
         axes.set_xticklabels(labelsColumn, minor = False)
         axes.set_yticklabels(labelsRow, minor = False)
         # LaTeX text
-        plt.rc('text', usetex = True)
-        plt.rc('font', family = 'serif')
+        matplotlib.pyplot.rc('text', usetex = True)
+        matplotlib.pyplot.rc('font', family = 'serif')
         # title
         if title:
-            plt.title(title, y = 1.05)
+            matplotlib.pyplot.title(title, y = 1.05)
         # plot/return/save
         if plot:
-            plt.show()
+            matplotlib.pyplot.show()
         if returnPlot:
             return(figure, axes)
         if save:
@@ -170,7 +170,7 @@ def plot_list(
                 fileName  = fileName,
                 overwrite = overwrite
             )
-            plt.savefig(fileNameProposed)
+            matplotlib.pyplot.savefig(fileNameProposed)
 
 def list_quotient(
     list_dividend = None,
