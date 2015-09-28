@@ -29,7 +29,7 @@
 #                                                                              #
 ################################################################################
 
-version = "2015-09-28T1325Z"
+version = "2015-09-28T1340Z"
 
 import sys
 import math
@@ -246,6 +246,32 @@ class TTYFigureData(object):
     """
     data container of TTYFigure
     """
+
+    markers = {
+        "-" : u"None" ,  # solid line style
+        "," : u"\u2219", # point marker
+        "." : u"\u2218", # pixel marker
+        ".f": u"\u2218", # pixel marker
+        "o" : u"\u25CB", # circle marker
+        "of": u"\u25CF", # circle marker
+        "v" : u"\u25BD", # triangle_down marker
+        "vf": u"\u25BC", # filler triangle_down marker
+        "^" : u"\u25B3", # triangle_up marker
+        "^f": u"\u25B2", # filled triangle_up marker
+        "<" : u"\u25C1", # triangle_left marker
+        "<f": u"\u25C0", # filled triangle_left marker
+        ">" : u"\u25B7", # triangle_right marker
+        ">f": u"\u25B6", # filled triangle_right marker
+        "s" : u"\u25FD", # square marker
+        "sf": u"\u25FC", # square marker
+        "*" : u"\u2606", # star marker
+        "*f": u"\u2605", # star marker
+        "+" : u"\u271A", # plus marker
+        "x" : u"\u274C", # x marker
+        "d" : u"\u25C7", # diamond marker
+        "df": u"\u25C6"  # filled diamond marker
+    }
+
     def __init__(
         self,
         x,                      # x values
@@ -256,30 +282,6 @@ class TTYFigureData(object):
         self.x          = x
         self.y          = y
         self.plot_slope = plot_slope
-        self.markers    = {
-            "-" : u"None" ,  # solid line style
-            "," : u"\u2219", # point marker
-            "." : u"\u2218", # pixel marker
-            ".f": u"\u2218", # pixel marker
-            "o" : u"\u25CB", # circle marker
-            "of": u"\u25CF", # circle marker
-            "v" : u"\u25BD", # triangle_down marker
-            "vf": u"\u25BC", # filler triangle_down marker
-            "^" : u"\u25B3", # triangle_up marker
-            "^f": u"\u25B2", # filled triangle_up marker
-            "<" : u"\u25C1", # triangle_left marker
-            "<f": u"\u25C0", # filled triangle_left marker
-            ">" : u"\u25B7", # triangle_right marker
-            ">f": u"\u25B6", # filled triangle_right marker
-            "s" : u"\u25FD", # square marker
-            "sf": u"\u25FC", # square marker
-            "*" : u"\u2606", # star marker
-            "*f": u"\u2605", # star marker
-            "+" : u"\u271A", # plus marker
-            "x" : u"\u274C", # x marker
-            "d" : u"\u25C7", # diamond marker
-            "df": u"\u25C6"  # filled diamond marker
-        }
         self.set_marker(marker)
 
     def set_marker(
