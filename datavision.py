@@ -29,7 +29,8 @@
 #                                                                              #
 ################################################################################
 
-version = "2015-09-28T1340Z"
+name    = "datavision"
+version = "2015-09-28T1526Z"
 
 import sys
 import math
@@ -157,8 +158,8 @@ def plot_list(
         axes.set_xticklabels(labelsColumn, minor = False)
         axes.set_yticklabels(labelsRow, minor = False)
         # LaTeX text
-        matplotlib.pyplot.rc('text', usetex = True)
-        matplotlib.pyplot.rc('font', family = 'serif')
+        matplotlib.pyplot.rc("text", usetex = True)
+        matplotlib.pyplot.rc("font", family = "serif")
         # title
         if title:
             matplotlib.pyplot.title(title, y = 1.05)
@@ -187,7 +188,6 @@ def list_mean(
     lists = None
     ):
     return([sum(element)/len(element) for element in zip(*lists)])
-
 
 class Qunti(list):
 
