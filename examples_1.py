@@ -3,7 +3,7 @@
 import sys
 import time
 import random
-import datavision as datavision
+import datavision
 
 def pause(
     text = "\nPress Enter to continue."
