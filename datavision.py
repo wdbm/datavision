@@ -28,9 +28,10 @@
 # <http://www.gnu.org/licenses/>.                                              #
 #                                                                              #
 ################################################################################
+from __future__ import division
 
 name    = "datavision"
-version = "2015-09-28T1526Z"
+version = "2015-09-29T1235Z"
 
 import sys
 import math
@@ -39,6 +40,14 @@ import matplotlib.pyplot
 matplotlib.pyplot.ion()
 import numpy
 import shijian
+
+def normalize(
+    x,
+    summation = None
+    ):
+    if summation is None:
+        summation = sum(x) # normalize to unity
+    return [element/summation for element in x]
 
 class Matrix(list):
     
@@ -188,6 +197,7 @@ def list_mean(
     lists = None
     ):
     return([sum(element)/len(element) for element in zip(*lists)])
+
 
 class Qunti(list):
 
