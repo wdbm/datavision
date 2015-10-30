@@ -10,7 +10,7 @@ def main():
         name             = "datavision",
         version          = "2015.09.29.1235",
         description      = "Python data visualisation",
-        long_description = Markdown_to_reStructuredText("README.md", "rst"),
+        long_description = Markdown_to_reStructuredText("README.md"),
         url              = "https://github.com/wdbm/datavision",
         author           = "Will Breaden Madden",
         author_email     = "w.bm@cern.ch",
