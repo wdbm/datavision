@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2015-09-29T1235Z"
+version = "2015-12-11T1740Z"
 
 import sys
 import math
@@ -39,6 +39,7 @@ import random
 import matplotlib.pyplot
 matplotlib.pyplot.ion()
 import numpy
+import pyprel
 import shijian
 
 def normalize(
@@ -48,6 +49,70 @@ def normalize(
     if summation is None:
         summation = sum(x) # normalize to unity
     return [element/summation for element in x]
+
+class Dataset(object):
+
+    def __init__(
+        self
+        ):
+        self._index = 0
+        self._data  = {}
+
+    def index(
+        number = None
+    ):
+        if number is not None:
+            self._index = number
+        return self._index
+
+    def indices(
+        self
+    ):
+        return [index for index in self._data]
+
+    def variable(
+        self,
+        index = None,
+        name  = None,
+        value = None
+    ):
+        if index is not None:
+            self._index = index
+        if name is not None:
+            if value is not None:
+                try:
+                    self._data[self._index][name] = value
+                except:
+                    self._data[self._index] = {}
+                    self._data[self._index][name] = value
+        return self._data[self._index][name]
+
+    def variables(
+        self,
+        index = 0
+    ):
+        return [
+            variable for variable, value in self._data[self._index].iteritems()
+        ]
+
+    def table(
+        self
+    ):
+        table_contents = ["index"]
+        table_contents.extend(self.variables())
+        table_contents = [table_contents]
+        for index in self.indices():
+            values = [
+                str(self.variable(
+                    name = name,
+                    index = index
+                )) for name in self.variables()]
+            row = [str(index)]
+            row.extend(values)
+            table_contents.append(row)
+        return pyprel.Table(
+            contents = table_contents
+        )
 
 class Matrix(list):
     

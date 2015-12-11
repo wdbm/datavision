@@ -7,11 +7,13 @@ Python data visualisation
 ```Bash
 sudo apt-get -y install python
 sudo apt-get -y install python-matplotlib
+sudo pip install shijian
 git clone https://github.com/wdbm/datavision.git
 cd datavision/
-wget https://raw.githubusercontent.com/wdbm/shijian/master/shijian.py
+wget https://raw.githubusercontent.com/wdbm/pyprel/master/pyprel.py
 python examples_1.py
-python examples_1.py
+python examples_2.py
+python example_data_1.py
 ```
 
 ## setup
