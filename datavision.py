@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-01-06T1657Z"
+version = "2016-01-06T1910Z"
 
 import sys
 import math
@@ -142,6 +142,26 @@ class Dataset(object):
     ):
         for name in self.variables():
             self.normalize(name = name)
+
+    def preprocess(
+        self,
+        name      = None
+    ):
+        from sklearn import preprocessing
+        values_raw = self.values(name = name)
+        values_preprocessed = list(preprocessing.scale(values_raw))
+        for index_preprocessed, index in enumerate(self.indices()):
+            self.variable(
+                index = index,
+                name  = name,
+                value = values_preprocessed[index_preprocessed]
+            )
+
+    def preprocess_all(
+        self
+    ):
+        for name in self.variables():
+            self.preprocess(name = name)
 
 class Matrix(list):
     
