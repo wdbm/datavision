@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2015-12-11T1740Z"
+version = "2016-01-06T1657Z"
 
 import sys
 import math
@@ -95,6 +95,12 @@ class Dataset(object):
             variable for variable, value in self._data[self._index].iteritems()
         ]
 
+    def values(
+        self,
+        name = None
+    ):
+        return [self._data[index][name] for index in self.indices()]
+
     def table(
         self
     ):
@@ -113,6 +119,29 @@ class Dataset(object):
         return pyprel.Table(
             contents = table_contents
         )
+
+    def normalize(
+        self,
+        name      = None,
+        summation = None
+    ):
+        values_raw = self.values(name = name)
+        values_normalized = normalize(
+            values_raw,
+            summation = summation
+        )
+        for index_normalized, index in enumerate(self.indices()):
+            self.variable(
+                index = index,
+                name  = name,
+                value = values_normalized[index_normalized]
+            )
+
+    def normalize_all(
+        self
+    ):
+        for name in self.variables():
+            self.normalize(name = name)
 
 class Matrix(list):
     
