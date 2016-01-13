@@ -9,7 +9,7 @@
 #                                                                              #
 # This program provides data visualisation utilities in Python.                #
 #                                                                              #
-# copyright (C) 2014 2015 William Breaden Madden                               #
+# copyright (C) 2014 William Breaden Madden                                    #
 #                                                                              #
 # This software is released under the terms of the GNU General Public License  #
 # version 3 (GPLv3).                                                           #
@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-01-06T1910Z"
+version = "2016-01-12T2359Z"
 
 import sys
 import math
@@ -168,12 +168,12 @@ class Matrix(list):
     def __init__(
         self,
         title                    = None,
-        numberOfColumns          = 3,
-        numberOfRows             = 3,
+        number_of_columns        = 3,
+        number_of_rows           = 3,
         element                  = 0.0,
         randomise                = False,
-        randomiseLimitLower      = -0.2,
-        randomiseLimitUpper      = 0.2,
+        randomise_limit_lower    = -0.2,
+        randomise_limit_upper    = 0.2,
         *args
         ):
         # list initialisation
@@ -182,94 +182,94 @@ class Matrix(list):
         else:
             super(Matrix, self).__init__(*args)        
         self.title               = title
-        self.numberOfColumns     = numberOfColumns
-        self.numberOfRows        = numberOfRows
+        self.number_of_columns   = number_of_columns
+        self.number_of_rows      = number_of_rows
         self.element             = element
         self.randomise           = randomise
-        self.randomiseLimitLower = randomiseLimitLower
-        self.randomiseLimitUpper = randomiseLimitUpper
+        self.randomise_limit_lower = randomise_limit_lower
+        self.randomise_limit_upper = randomise_limit_upper
         # fill with default element
-        for column in range(self.numberOfColumns):
-            self.append([element] * self.numberOfRows)
+        for column in range(self.number_of_columns):
+            self.append([element] * self.number_of_rows)
         # fill with pseudorandom elements
         if self.randomise:
             random.seed()
-            for row in range(self.numberOfRows):
-                for column in range(self.numberOfColumns):
+            for row in range(self.number_of_rows):
+                for column in range(self.number_of_columns):
                     self[row][column] = random.uniform(
-                        self.randomiseLimitUpper,
-                        self.randomiseLimitLower
+                        self.randomise_limit_upper,
+                        self.randomise_limit_lower
                     )
         # plot
         self._array = numpy.array(self)
-        self._plotNumber         = shijian.uniqueNumber()
+        self._plot_number        = shijian.unique_number()
         # show or draw plot
-        self._plotShown          = False
+        self._plot_shown         = False
 
     def plot(self):
         # display or redraw plot
-        if self._plotShown:
-            matplotlib.pyplot.figure(str(self._plotNumber))
+        if self._plot_shown:
+            matplotlib.pyplot.figure(str(self._plot_number))
             self._array = numpy.array(self)
-            self._plotAxes.pcolor(
+            self._plot_axes.pcolor(
                 self._array,
                 cmap = matplotlib.pyplot.cm.Blues
             )
             matplotlib.pyplot.draw()
         else:
-            self._plotFigure, \
-            self._plotAxes       = plot_list(
-                                       listObject = self,
-                                       title      = self.title,
-                                       plotNumber = self._plotNumber,
-                                       plot       = False,
-                                       returnPlot = True
-                                )
-            matplotlib.pyplot.figure(str(self._plotNumber))
+            self._plot_figure, \
+            self._plot_axes      = plot_list(
+                                       list_object = self,
+                                       title       = self.title,
+                                       plot_number = self._plot_number,
+                                       plot        = False,
+                                       return_plot = True
+                                   )
+            matplotlib.pyplot.figure(str(self._plot_number))
             matplotlib.pyplot.show()
-            self._plotShown = True
+            self._plot_shown = True
 
     def save_plot(
         self,
-        fileName  = None,
+        filename  = None,
         overwrite = False
         ):
-        matplotlib.pyplot.figure(str(self._plotNumber))
-        fileNameProposed = shijian.proposeFileName(
-            fileName  = fileName,
+        matplotlib.pyplot.figure(str(self._plot_number))
+        filename_proposed = shijian.propose_filename(
+            filename  = filename,
             overwrite = overwrite
         )
-        matplotlib.pyplot.savefig(fileNameProposed)
+        matplotlib.pyplot.savefig(filename_proposed)
 
     def close_plot(self):
-        matplotlib.pyplot.figure(str(self._plotNumber))
+        matplotlib.pyplot.figure(str(self._plot_number))
         matplotlib.pyplot.close()
-        self._plotShown = False
+        self._plot_shown = False
 
 def plot_list(
-    listObject = None,
-    title      = None,
-    plotNumber = None,
-    style      = "colormap",
-    fileName   = None,
-    overwrite  = False,
-    plot       = True,
-    returnPlot = False,
-    save       = False
+    list_object = None,
+    title       = None,
+    plot_number = None,
+    style       = "colormap",
+    filename    = None,
+    overwrite   = False,
+    plot        = True,
+    return_plot = False,
+    save        = False
     ):
-    if not plotNumber:
-        plotNumber = shijian.uniqueNumber()
+    if not plot_number:
+        plot_number = shijian.unique_number()
     if style == "colormap":
         # convert list to NumPy array
-        array = numpy.array(listObject)
+        array = numpy.array(list_object)
         dimensionality = len(array.shape)
         if dimensionality == 1:
-            array = numpy.array([listObject])
+            array = numpy.array([list_object])
         # create axis labels
-        labelsColumn = list(range(0, array.shape[1]))
-        labelsRow = list(range(0, array.shape[0]))
+        labels_column = list(range(0, array.shape[1]))
+        labels_row = list(range(0, array.shape[0]))
         # create figure and axes
-        figure = matplotlib.pyplot.figure(str(plotNumber))
+        figure = matplotlib.pyplot.figure(str(plot_number))
         axes = figure.add_subplot(111)
         colormap = axes.pcolor(array, cmap = matplotlib.pyplot.cm.Blues)
         # major ticks at middle of each cell
@@ -278,8 +278,8 @@ def plot_list(
         # table-like display
         axes.invert_yaxis()
         axes.xaxis.tick_top()
-        axes.set_xticklabels(labelsColumn, minor = False)
-        axes.set_yticklabels(labelsRow, minor = False)
+        axes.set_xticklabels(labels_column, minor = False)
+        axes.set_yticklabels(labels_row, minor = False)
         # LaTeX text
         matplotlib.pyplot.rc("text", usetex = True)
         matplotlib.pyplot.rc("font", family = "serif")
@@ -289,14 +289,14 @@ def plot_list(
         # plot/return/save
         if plot:
             matplotlib.pyplot.show()
-        if returnPlot:
+        if return_plot:
             return(figure, axes)
         if save:
-            fileNameProposed = shijian.proposeFileName(
-                fileName  = fileName,
+            filename_proposed = shijian.propose_filename(
+                filename  = filename,
                 overwrite = overwrite
             )
-            matplotlib.pyplot.savefig(fileNameProposed)
+            matplotlib.pyplot.savefig(filename_proposed)
 
 def list_quotient(
     list_dividend = None,
@@ -327,44 +327,44 @@ class Qunti(list):
     
     def symmetric_difference(
         self,
-        updateZus
+        update_zus
         ):
-        symmetricDifferenceSet = \
-            set(zu[0] for zu in self) ^ set(zu[0] for zu in updateZus)
+        symmetric_difference_set = \
+            set(zu[0] for zu in self) ^ set(zu[0] for zu in update_zus)
         return(
-            [zu for zu in self if zu[0] in symmetricDifferenceSet] +
-            [zu for zu in updateZus if zu[0] in symmetricDifferenceSet]
+            [zu for zu in self if zu[0] in symmetric_difference_set] +
+            [zu for zu in update_zus if zu[0] in symmetric_difference_set]
         )
 
     def intersection(
         self,
-        updateZus
+        update_zus
         ):
-        intersectionSet = \
-            set(zu[0] for zu in self) & set(zu[0] for zu in updateZus)
+        intersection_set = \
+            set(zu[0] for zu in self) & set(zu[0] for zu in update_zus)
         return(
-            [zu for zu in self if zu[0] in intersectionSet] +
-            [zu for zu in updateZus if zu[0] in intersectionSet]
+            [zu for zu in self if zu[0] in intersection_set] +
+            [zu for zu in update_zus if zu[0] in intersection_set]
         )
 
     def update(
         self,
-        updateZus
+        update_zus
         ):
-        selfUpdated = []
+        self_updated = []
         # Get the symmetric difference zus of the current zus and the update
         # zus. Include the symmetric difference zus in the updated self zus.
-        symmetricDifference = self.symmetric_difference(updateZus)
-        symmetricDifferenceSet = set(zu[0] for zu in symmetricDifference)
-        selfUpdated.extend(symmetricDifference)
+        symmetric_difference = self.symmetric_difference(update_zus)
+        symmetric_difference_set = set(zu[0] for zu in symmetric_difference)
+        self_updated.extend(symmetric_difference)
         # Include all entries of the update zus not in the symmetric difference
         # zus in the updated self zus.        
-        selfUpdated.extend(
-            [zu for zu in updateZus \
-            if zu[0] not in symmetricDifferenceSet]
+        self_updated.extend(
+            [zu for zu in update_zus \
+            if zu[0] not in symmetric_difference_set]
         )
         # Update the self zus.
-        self.__init__(selfUpdated)
+        self.__init__(self_updated)
 
 class TTYFigureData(object):
     """
@@ -453,8 +453,8 @@ class TTYFigure(object):
         self.draw_axes     = draw_axes
         self.new_line      = newline
         self.plot_labels   = plot_labels
-        self.outBuffer     = None
-        self.tickSymbols   = u"\u253C"  # "+"
+        self.out_buffer    = None
+        self.tick_symbols  = u"\u253C"  # "+"
         self.x_axis_symbol = u"\u2500"  # u"\u23bc" # "-"
         self.y_axis_symbol = u"\u2502"  # "|"
         self.data          = []
@@ -498,7 +498,7 @@ class TTYFigure(object):
         if zero_x >= self.canvas.x_size:
             zero_x = self.canvas.x_size - 1
         for y in xrange(self.canvas.y_size):
-            self.outBuffer[zero_x][y] = self.y_axis_symbol
+            self.out_buffer[zero_x][y] = self.y_axis_symbol
 
         zero_y = self.get_coordinates(
             0,
@@ -508,9 +508,9 @@ class TTYFigure(object):
         if zero_y >= self.canvas.y_size:
             zero_y = self.canvas.y_size - 1
         for x in xrange(self.canvas.x_size):
-            self.outBuffer[x][zero_y] = self.x_axis_symbol # u"\u23bc"
+            self.out_buffer[x][zero_y] = self.x_axis_symbol # u"\u23bc"
 
-        self.outBuffer[zero_x][zero_y] = self.tickSymbols # "+"
+        self.out_buffer[zero_x][zero_y] = self.tick_symbols # "+"
 
     def _get_symbol_by_slope(
         self,
@@ -580,22 +580,22 @@ class TTYFigure(object):
             limits = [1, self.canvas.y_size]
         )
 
-        self.outBuffer[x_zero_coordinates][min_y_coordinates] = self.tickSymbols
-        self.outBuffer[x_zero_coordinates][max_y_coordinates] = self.tickSymbols
-        self.outBuffer[min_x_coordinates][y_zero_coordinates] = self.tickSymbols
-        self.outBuffer[max_x_coordinates][y_zero_coordinates] = self.tickSymbols
+        self.out_buffer[x_zero_coordinates][min_y_coordinates] = self.tick_symbols
+        self.out_buffer[x_zero_coordinates][max_y_coordinates] = self.tick_symbols
+        self.out_buffer[min_x_coordinates][y_zero_coordinates] = self.tick_symbols
+        self.out_buffer[max_x_coordinates][y_zero_coordinates] = self.tick_symbols
 
         min_x_string, max_x_string, min_y_string, max_y_string =\
             self.canvas.extent_string()
         if self.canvas.x_string() is not None:
             for i, c in enumerate(min_x_string):
-                self.outBuffer[
+                self.out_buffer[
                     min_x_coordinates + i + 1
                 ][
                     y_zero_coordinates - 1
                 ] = c
             for i, c in enumerate(max_x_string):
-                self.outBuffer[
+                self.out_buffer[
                     max_x_coordinates + i - len(max_x_string)
                 ][
                     y_zero_coordinates - 1
@@ -603,13 +603,13 @@ class TTYFigure(object):
 
         if self.canvas.y_string() is not None:
             for i, c in enumerate(max_y_string):
-                self.outBuffer[
+                self.out_buffer[
                     x_zero_coordinates + i + 1
                 ][
                     max_y_coordinates
                 ] = c
             for i, c in enumerate(min_y_string):
-                self.outBuffer[
+                self.out_buffer[
                     x_zero_coordinates + i + 1
                 ][
                     min_y_coordinates
@@ -692,7 +692,7 @@ class TTYFigure(object):
                     (current_y == y_zero_coordinates) and\
                     (draw_symbol == self.x_axis_symbol):
                     current_draw_symbol = "-"
-                self.outBuffer[x0 + x][current_y] = current_draw_symbol
+                self.out_buffer[x0 + x][current_y] = current_draw_symbol
         else:
             s = sign(dy)
             slope = float(dx) / dy
@@ -705,7 +705,7 @@ class TTYFigure(object):
                     (current_y == y_zero_coordinates) and\
                     (draw_symbol == self.x_axis_symbol):
                     current_draw_symbol = "-"
-                self.outBuffer[
+                self.out_buffer[
                     int(x0 + slope * y)
                 ][
                     current_y
@@ -767,7 +767,7 @@ class TTYFigure(object):
                             (y_coordinates == y0_coordinates) and\
                             (draw_symbol == u"\u23bc"):
                             draw_symbol = "="
-                    self.outBuffer[x_coordinates][y_coordinates] = draw_symbol
+                    self.out_buffer[x_coordinates][y_coordinates] = draw_symbol
 
     def _plot_data(
         self,
@@ -793,7 +793,7 @@ class TTYFigure(object):
                         x_coordinates,
                         y_coordinates
                         ):
-                        self.outBuffer[
+                        self.out_buffer[
                             x_coordinates
                         ][
                             y_coordinates
@@ -835,13 +835,13 @@ class TTYFigure(object):
             y_values = x_values[:]
             x_values = range(len(y_values))
 
-        figureData = TTYFigureData(
+        figure_data = TTYFigureData(
             x_values,
             y_values,
             marker = marker,
             plot_slope = plot_slope
         )
-        self.append_data(figureData)
+        self.append_data(figure_data)
 
         if limit_x is not None:
             self.canvas.limit_x(limit_x)
@@ -852,7 +852,7 @@ class TTYFigure(object):
         return self.draw()
 
     def draw(self):
-        self.outBuffer =\
+        self.out_buffer =\
             [[" "] * self.canvas.y_size for i in range(self.canvas.x_size)]
         if self.draw_axes:
             self._draw_axes()
@@ -862,7 +862,7 @@ class TTYFigure(object):
 
         if self.plot_labels:
             self._plot_labels()
-        result_transposed = transpose(reverse_y(self.outBuffer))
+        result_transposed = transpose(reverse_y(self.out_buffer))
         result = self.new_line.join(["".join(row) for row in result_transposed])
         return result
 
@@ -1308,7 +1308,7 @@ def histogram2D(
     x,
     y,
     bins             = [50, 20],
-    histogramRange   = None,
+    histogram_range  = None,
     normalized       = False,
     weights          = None,
     number_of_colors = 16,
@@ -1320,7 +1320,7 @@ def histogram2D(
         x,
         y,
         bins,
-        range   = histogramRange,
+        range   = histogram_range,
         normed  = normalized,
         weights = weights
     )

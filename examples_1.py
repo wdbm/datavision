@@ -60,14 +60,14 @@ def main():
     matrix1 = [[ 1,  2,  3 ],
                [ 4,  5,  6 ],
                [ 7,  8,  9 ]]
-    datavision.plot_list(listObject = matrix1)
+    datavision.plot_list(list_object = matrix1)
     
     print("plot 4 x 4 list")
     matrix2 = [[ 1,  2,  3,  4 ],
               [  5,  6,  7,  8 ],
               [  9, 10, 11, 12 ],
               [ 13, 14, 15, 16 ]]
-    datavision.plot_list(listObject = matrix2)
+    datavision.plot_list(list_object = matrix2)
     
     print("plot 5 x 5 list")
     matrix3 = [[  1,  2,  3,  4,  5 ],
@@ -75,26 +75,26 @@ def main():
                [ 11, 12, 13, 14, 15 ],
                [ 16, 17, 18, 19, 20 ],
                [ 21, 22, 23, 24, 25 ]]
-    datavision.plot_list(listObject = matrix3)
+    datavision.plot_list(list_object = matrix3)
 
     print("plot 1 x 3 list")
     matrix4 = [[1],
                [2],
                [3]]
-    datavision.plot_list(listObject = matrix4)
+    datavision.plot_list(list_object = matrix4)
 
     print("plot 3-element list as 3 x 1 list")
     matrix5 = [1, 2, 3]
-    datavision.plot_list(listObject = matrix5)
+    datavision.plot_list(list_object = matrix5)
 
     pause("Press Enter to continue.")
 
     print("print and plot 10 x 10 matrix")
     matrix = datavision.Matrix(
         title = "matrix",
-        numberOfColumns = 50,
-        numberOfRows    = 50,
-        randomise       = True
+        number_of_columns = 50,
+        number_of_rows    = 50,
+        randomise         = True
     )
     print(matrix)
     matrix.plot()
@@ -106,9 +106,9 @@ def main():
     print("plot 2 x 2 matrix and display it changing in a loop")
     matrix = datavision.Matrix(
         title = "matrix",
-        numberOfColumns = 2,
-        numberOfRows    = 2,
-        randomise       = True
+        number_of_columns = 2,
+        number_of_rows    = 2,
+        randomise         = True
     )
     for row in range(len(matrix)):
         for column in range(len(matrix[row])):
@@ -124,9 +124,9 @@ def main():
     print("plot 10 x 10 matrix and display it changing in a loop")
     matrix = datavision.Matrix(
         title = "matrix",
-        numberOfColumns = 10,
-        numberOfRows    = 10,
-        randomise       = True
+        number_of_columns = 10,
+        number_of_rows    = 10,
+        randomise         = True
     )
     for row in range(len(matrix)):
         for column in range(len(matrix[row])):
