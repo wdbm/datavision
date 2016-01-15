@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-01-12T2359Z"
+version = "2016-01-15T2356Z"
 
 import sys
 import math
@@ -41,14 +41,6 @@ matplotlib.pyplot.ion()
 import numpy
 import pyprel
 import shijian
-
-def normalize(
-    x,
-    summation = None
-    ):
-    if summation is None:
-        summation = sum(x) # normalize to unity
-    return [element/summation for element in x]
 
 class Dataset(object):
 
@@ -298,6 +290,33 @@ def plot_list(
             )
             matplotlib.pyplot.savefig(filename_proposed)
 
+def normalize(
+    x,
+    summation = None
+    ):
+    if summation is None:
+        summation = sum(x) # normalize to unity
+    return [element/summation for element in x]
+
+def normalize_to_range(
+    list_of_values,
+    minimum = 0.0,
+    maximum = 1.0
+    ):
+    """
+    This function normalizes values of a list to a specified range and returns
+    the original object if the values are not of the types integer or float.
+    """
+    normalized_list_of_values = []
+    minimum_value = min(list_of_values)
+    maximum_value = max(list_of_values)
+    for value in list_of_values:
+        numerator = value - minimum_value
+        denominator = maximum_value - minimum_value
+        value_normalized = (maximum - minimum) * numerator/denominator + minimum
+        normalized_list_of_values.append(value_normalized)
+    return normalized_list_of_values
+
 def list_quotient(
     list_dividend = None,
     list_divisor  = None
@@ -312,6 +331,79 @@ def list_mean(
     ):
     return([sum(element)/len(element) for element in zip(*lists)])
 
+def mean(
+    list_of_values,
+    ):
+    array_of_values = numpy.array(list_of_values)
+    mean = array_of_values.mean()
+    return mean
+
+def standard_deviation(
+    list_of_values,
+    ):
+    array_of_values = numpy.array(list_of_values)
+    standard_deviation = array_of_values.std()
+    return standard_deviation
+
+def interquartile_range(
+    list_of_values,
+    ):
+    array_of_values = numpy.array(list_of_values)
+    interquartile_range = numpy.percentile(list_of_values, 75) -\
+                          numpy.percentile(list_of_values, 25)
+    return interquartile_range
+
+def frange(x, y, step):
+    while x < y:
+        yield x
+        x += step
+
+def scale_list(
+    values = None,
+    factor = None,
+    ):
+    return [factor * value for value in values]
+
+def propose_number_of_bins(
+    list_of_values,
+    binning_logic_system = None,
+    ):
+    """
+    This function returns a proposal for binning for a histogram of a specified
+    list using an optional specified binning logic system.
+
+    Freedman-Diaconis: bin width is proportional to the interquartile range of
+                       the data divided by the cube root of the size of the data
+
+    Scott:             bin width is proportional to the standard deviation of
+                       the values divided by the cube root of the size of the
+                       data
+    """
+    # Set the default binning logic system.
+    if binning_logic_system is None:
+        binning_logic_system = "Scott"
+    # Engage the requested logic system.
+    if binning_logic_system == "Freedman-Diaconis":
+        #log.debug("engage Freedman-Diaconis binning logic")
+        bin_size =\
+            2 * datavision.interquartile_range(list_of_values) * \
+            len(list_of_values) ** (-1/3)
+    elif binning_logic_system == "Scott":
+        #log.debug("engage Scott binning logic")
+        bin_size =\
+            3.5 * datavision.standard_deviation(list_of_values) * \
+            len(list_of_values) ** (-1/3)
+    else:
+        log.error("undefined binning logic system requested")
+        raise(ValueError)
+    number_of_bins = (max(list_of_values) - min(list_of_values)) / bin_size
+    if numpy.isinf(number_of_bins) or numpy.isnan(number_of_bins):
+        number_of_bins = len(set(list_of_values)) # number of unique values
+        #log.debug(
+        #    "binning algorithms ineffective -- " +
+        #    "propose binning by unique values"
+        #)
+    return int(round(number_of_bins))
 
 class Qunti(list):
 
