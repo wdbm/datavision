@@ -31,13 +31,13 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-01-15T2356Z"
+version = "2016-01-19T1725Z"
 
 import sys
 import math
 import random
 import matplotlib.pyplot
-matplotlib.pyplot.ion()
+from matplotlib.ticker import ScalarFormatter, FormatStrFormatter
 import numpy
 import pyprel
 import shijian
@@ -137,7 +137,7 @@ class Dataset(object):
 
     def preprocess(
         self,
-        name      = None
+        name = None
     ):
         from sklearn import preprocessing
         values_raw = self.values(name = name)
@@ -155,6 +155,31 @@ class Dataset(object):
         for name in self.variables():
             self.preprocess(name = name)
 
+    def shuffle(
+        self,
+        name = None,
+        seed = 100
+    ):
+        random.seed(seed)
+        values = self.values(name = name)
+        random.shuffle(values)
+        for index_shuffled, index in enumerate(self.indices()):
+            self.variable(
+                index = index,
+                name  = name,
+                value = values[index_shuffled]
+            )
+
+    def shuffle_all(
+        self,
+        seed = 100
+    ):
+        for name in self.variables():
+            self.shuffle(
+                name = name,
+                seed = seed
+            )
+
 class Matrix(list):
     
     def __init__(
@@ -168,6 +193,7 @@ class Matrix(list):
         randomise_limit_upper    = 0.2,
         *args
         ):
+        matplotlib.pyplot.ion()
         # list initialisation
         if sys.version_info >= (3, 0):
             super().__init__(self, *args)
@@ -299,7 +325,7 @@ def normalize(
     return [element/summation for element in x]
 
 def normalize_to_range(
-    list_of_values,
+    values,
     minimum = 0.0,
     maximum = 1.0
     ):
@@ -307,15 +333,15 @@ def normalize_to_range(
     This function normalizes values of a list to a specified range and returns
     the original object if the values are not of the types integer or float.
     """
-    normalized_list_of_values = []
-    minimum_value = min(list_of_values)
-    maximum_value = max(list_of_values)
-    for value in list_of_values:
+    normalized_values = []
+    minimum_value = min(values)
+    maximum_value = max(values)
+    for value in values:
         numerator = value - minimum_value
         denominator = maximum_value - minimum_value
         value_normalized = (maximum - minimum) * numerator/denominator + minimum
-        normalized_list_of_values.append(value_normalized)
-    return normalized_list_of_values
+        normalized_values.append(value_normalized)
+    return normalized_values
 
 def list_quotient(
     list_dividend = None,
@@ -332,25 +358,25 @@ def list_mean(
     return([sum(element)/len(element) for element in zip(*lists)])
 
 def mean(
-    list_of_values,
+    values,
     ):
-    array_of_values = numpy.array(list_of_values)
+    array_of_values = numpy.array(values)
     mean = array_of_values.mean()
     return mean
 
 def standard_deviation(
-    list_of_values,
+    values,
     ):
-    array_of_values = numpy.array(list_of_values)
+    array_of_values = numpy.array(values)
     standard_deviation = array_of_values.std()
     return standard_deviation
 
 def interquartile_range(
-    list_of_values,
+    values,
     ):
-    array_of_values = numpy.array(list_of_values)
-    interquartile_range = numpy.percentile(list_of_values, 75) -\
-                          numpy.percentile(list_of_values, 25)
+    array_of_values = numpy.array(values)
+    interquartile_range = numpy.percentile(values, 75) -\
+                          numpy.percentile(values, 25)
     return interquartile_range
 
 def frange(x, y, step):
@@ -365,7 +391,7 @@ def scale_list(
     return [factor * value for value in values]
 
 def propose_number_of_bins(
-    list_of_values,
+    values,
     binning_logic_system = None,
     ):
     """
@@ -386,24 +412,123 @@ def propose_number_of_bins(
     if binning_logic_system == "Freedman-Diaconis":
         #log.debug("engage Freedman-Diaconis binning logic")
         bin_size =\
-            2 * datavision.interquartile_range(list_of_values) * \
-            len(list_of_values) ** (-1/3)
+            2 * interquartile_range(values) * \
+            len(values) ** (-1/3)
     elif binning_logic_system == "Scott":
         #log.debug("engage Scott binning logic")
         bin_size =\
-            3.5 * datavision.standard_deviation(list_of_values) * \
-            len(list_of_values) ** (-1/3)
+            3.5 * standard_deviation(values) * \
+            len(values) ** (-1/3)
     else:
         log.error("undefined binning logic system requested")
         raise(ValueError)
-    number_of_bins = (max(list_of_values) - min(list_of_values)) / bin_size
+    number_of_bins = (max(values) - min(values)) / bin_size
     if numpy.isinf(number_of_bins) or numpy.isnan(number_of_bins):
-        number_of_bins = len(set(list_of_values)) # number of unique values
+        number_of_bins = len(set(values)) # number of unique values
         #log.debug(
         #    "binning algorithms ineffective -- " +
         #    "propose binning by unique values"
         #)
     return int(round(number_of_bins))
+
+def save_histogram_matplotlib(
+    values,
+    filename       = None,
+    number_of_bins = None,
+    color_fill     = "#3861AA",
+    color_edge     = "none",
+    normalize      = False,
+    label_x        = "frequency",
+    label_y        = None,
+    title          = None,
+    overwrite      = True,
+    LaTeX          = False
+    ):
+
+    matplotlib.pyplot.ioff()
+    if LaTeX is True:
+        matplotlib.pyplot.rc("text", usetex = True)
+        matplotlib.pyplot.rc("font", family = "serif")
+    if number_of_bins is None:
+        number_of_bins = propose_number_of_bins(values)
+    if filename is None:
+        filename = shijian.propose_filename(
+            filename  = title.replace(" ", "_") + ".png",
+            overwrite = overwrite
+        )
+
+    n, bins, patches = matplotlib.pyplot.hist(
+        values,
+        number_of_bins,
+        normed    = int(normalize),
+        facecolor = color_fill,
+        edgecolor = color_edge,
+        alpha     = 1
+    )
+    matplotlib.pyplot.xlabel(label_x)
+    matplotlib.pyplot.ylabel(label_y)
+    matplotlib.pyplot.title(title)
+    matplotlib.pyplot.subplots_adjust(left = 0.15)
+    matplotlib.pyplot.savefig(filename)
+    matplotlib.pyplot.close()
+
+def save_histogram_comparison_matplotlib(
+    values_1 = None,
+    values_2 = None,
+
+    filename       = None,
+    number_of_bins = None,
+    normalize      = True,
+    label_x        = "",
+    label_y        = None,
+    label_ratio_x  = "frequency",
+    label_ratio_y  = "ratio",
+    title          = None,
+    label_1        = "1",
+    label_2        = "2",
+    overwrite      = True,
+    LaTeX          = False
+    ):
+
+    matplotlib.pyplot.ioff()
+    if LaTeX is True:
+        matplotlib.pyplot.rc("text", usetex = True)
+        matplotlib.pyplot.rc("font", family = "serif")
+    if number_of_bins is None:
+        number_of_bins_1 = propose_number_of_bins(values_1)
+        number_of_bins_2 = propose_number_of_bins(values_2)
+        number_of_bins = int((number_of_bins_1 + number_of_bins_2) / 2)
+    if filename is None:
+        filename = shijian.propose_filename(
+            filename  = title.replace(" ", "_") + ".png",
+            overwrite = overwrite
+        )
+
+    values = []
+    values.append(values_1)
+    values.append(values_2)
+    figure, (axis_1, axis_2) = matplotlib.pyplot.subplots(nrows = 2)
+    ns, bins, patches = axis_1.hist(
+        values,
+        normed   = normalize,
+        histtype = "stepfilled",
+        bins     = number_of_bins,
+        alpha    = 0.5,
+        label    = [label_1, label_2]
+    )
+    axis_1.legend()
+    axis_2.bar(
+        bins[:-1],
+        ns[0] / ns[1],
+        alpha = 1,
+    )
+    axis_1.set_xlabel(label_x)
+    axis_1.set_ylabel(label_y)
+    axis_2.set_xlabel(label_ratio_x)
+    axis_2.set_ylabel(label_ratio_y)
+    matplotlib.pyplot.title(title)
+    matplotlib.pyplot.savefig(filename)
+    matplotlib.pyplot.close()
 
 class Qunti(list):
 
