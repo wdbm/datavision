@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-01-20T1442Z"
+version = "2016-01-21T1358Z"
 
 import sys
 import math
@@ -507,30 +507,41 @@ def save_histogram_comparison_matplotlib(
     values.append(values_1)
     values.append(values_2)
     bar_width = 0.8
-    figure, (axis_1, axis_2) = matplotlib.pyplot.subplots(nrows = 2)
+    figure, (axis_1, axis_2) = matplotlib.pyplot.subplots(
+        nrows       = 2,
+        gridspec_kw = {'height_ratios':(2, 1)}
+    )
     ns, bins, patches = axis_1.hist(
         values,
-        normed   = normalize,
-        histtype = "stepfilled",
-        bins     = number_of_bins,
-        alpha    = 0.5,
-        label    = [label_1, label_2],
-        rwidth   = bar_width,
+        color     = [
+                        (  0 / 255,  85 / 255, 160 / 255), # #3861AA
+                        (  0 / 255, 255 / 255,   0 / 255)  # #00FF00
+                    ],
+        normed    = normalize,
+        histtype  = "stepfilled",
+        bins      = number_of_bins,
+        alpha     = 0.5,
+        label     = [label_1, label_2],
+        rwidth    = bar_width,
         linewidth = 0
     )
-    axis_1.legend()
-    axis_2.bar(
+    axis_1.legend(
+        loc = "best"
+    )
+    bars = axis_2.bar(
         bins[:-1],
         ns[0] / ns[1],
-        edgecolor = "#ffffff", # "none"
-        alpha = 0.5,
-        width = bins[1] - bins[0]
+        alpha     = 0.5,
+        linewidth = 0,
+        width     = bins[1] - bins[0]
     )
+    for bar in bars:
+        bar.set_color("#00B9BC")
     axis_1.set_xlabel(label_x)
     axis_1.set_ylabel(label_y)
     axis_2.set_xlabel(label_ratio_x)
     axis_2.set_ylabel(label_ratio_y)
-    matplotlib.pyplot.title(title)
+    matplotlib.pyplot.suptitle(title)
     matplotlib.pyplot.savefig(filename)
     matplotlib.pyplot.close()
 

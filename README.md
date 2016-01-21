@@ -92,6 +92,10 @@ Datavision provides utilities for data visualisation. It can visualise matrices 
 ![](images/image_2.png)
 ![](images/image_3.png)
 
+It can visualise histograms:
+
+![](images/histogram_comparison_1.png)
+
 It can visualise graphs and histograms in a terminal:
 
 ```
