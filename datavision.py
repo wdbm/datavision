@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-01-19T1725Z"
+version = "2016-01-20T1442Z"
 
 import sys
 import math
@@ -473,9 +473,8 @@ def save_histogram_matplotlib(
     matplotlib.pyplot.close()
 
 def save_histogram_comparison_matplotlib(
-    values_1 = None,
-    values_2 = None,
-
+    values_1       = None,
+    values_2       = None,
     filename       = None,
     number_of_bins = None,
     normalize      = True,
@@ -497,7 +496,7 @@ def save_histogram_comparison_matplotlib(
     if number_of_bins is None:
         number_of_bins_1 = propose_number_of_bins(values_1)
         number_of_bins_2 = propose_number_of_bins(values_2)
-        number_of_bins = int((number_of_bins_1 + number_of_bins_2) / 2)
+        number_of_bins   = int((number_of_bins_1 + number_of_bins_2) / 2)
     if filename is None:
         filename = shijian.propose_filename(
             filename  = title.replace(" ", "_") + ".png",
@@ -507,6 +506,7 @@ def save_histogram_comparison_matplotlib(
     values = []
     values.append(values_1)
     values.append(values_2)
+    bar_width = 0.8
     figure, (axis_1, axis_2) = matplotlib.pyplot.subplots(nrows = 2)
     ns, bins, patches = axis_1.hist(
         values,
@@ -514,13 +514,17 @@ def save_histogram_comparison_matplotlib(
         histtype = "stepfilled",
         bins     = number_of_bins,
         alpha    = 0.5,
-        label    = [label_1, label_2]
+        label    = [label_1, label_2],
+        rwidth   = bar_width,
+        linewidth = 0
     )
     axis_1.legend()
     axis_2.bar(
         bins[:-1],
         ns[0] / ns[1],
-        alpha = 1,
+        edgecolor = "#ffffff", # "none"
+        alpha = 0.5,
+        width = bins[1] - bins[0]
     )
     axis_1.set_xlabel(label_x)
     axis_1.set_ylabel(label_y)
