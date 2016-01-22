@@ -144,6 +144,10 @@ It can visualise graphs and histograms in a terminal:
    -4.69099              │              +4.6147   
 ```
 
+It can plot all combinations of variables:
+
+![](images/variable_correlations.png)
+
 # prerequisites
 
 ## Python 2 or Python 3

@@ -31,11 +31,12 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-01-22T1332Z"
+version = "2016-01-22T1600Z"
 
 import sys
 import math
 import random
+import itertools
 import matplotlib.pyplot
 import numpy
 import scipy.stats
@@ -458,6 +459,71 @@ def propose_number_of_bins(
         #    "propose binning by unique values"
         #)
     return int(round(number_of_bins))
+
+def save_graph_all_combinations_matplotlib(
+    variables        = None,
+    variables_names  = None,
+    title            = None,
+    label_x          = "",
+    label_y          = "",
+    filename         = None,
+    overwrite        = True,
+    LaTeX            = False
+    ):
+
+    matplotlib.pyplot.ioff()
+    if LaTeX is True:
+        matplotlib.pyplot.rc("text", usetex = True)
+        matplotlib.pyplot.rc("font", family = "serif")
+    if filename is None:
+        filename = shijian.propose_filename(
+            filename  = title.replace(" ", "_") + ".png",
+            overwrite = overwrite
+        )
+
+    marker_size = 20
+
+    # Turn off scientific notation.
+    matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
+    
+    figure = matplotlib.pyplot.figure()
+    figure.suptitle(title, fontsize = 20)
+
+    # Create a list of variable values combined with their names.
+    variable_collection = []
+    for variable, variable_name in zip(variables, variables_names):
+        variable_collection.append([variable, variable_name])
+
+    # Loop over all pair combinations of variable values with their respective
+    # names and add them to the plot.
+    variable_collections_combinations = list(itertools.combinations(variable_collection, 2))
+    number_of_combinations = len(variable_collections_combinations)
+    palette = pyprel.access_palette()
+    palette.extend_palette(
+        minimum_number_of_colors_needed = number_of_combinations
+    )
+    for variable_combination, color in zip(
+        variable_collections_combinations,
+        palette
+        ):
+        variable_1_values = variable_combination[0][0]
+        variable_1_name = variable_combination[0][1]
+        variable_2_values = variable_combination[1][0]
+        variable_2_name = variable_combination[1][1]
+        label = variable_1_name + " versus " + variable_2_name
+        matplotlib.pyplot.scatter(
+            variable_1_values,
+            variable_2_values,
+            s          = marker_size,
+            c          = color,
+            edgecolors = "none",
+            label      = label,
+        )
+    matplotlib.pyplot.xlabel(label_x)
+    matplotlib.pyplot.ylabel(label_y)
+    matplotlib.pyplot.legend(loc = "best")
+    matplotlib.pyplot.savefig(filename)
+    matplotlib.pyplot.close()
 
 def save_histogram_matplotlib(
     values,
