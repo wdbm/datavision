@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-01-22T1600Z"
+version = "2016-01-22T1624Z"
 
 import sys
 import math
@@ -407,6 +407,44 @@ def correlation_linear(
             p_value = p_value
         )
         return text
+
+def analyze_correlations(
+    variables       = None,
+    variables_names = None
+    ):
+
+    # Create a list of variable values combined with their names.
+    variable_collection = []
+    for variable, variable_name in zip(variables, variables_names):
+        variable_collection.append([variable, variable_name])
+
+    # Loop over all pair combinations of variable values with their respective
+    # names and calculate their correlations. Generate and print a table.
+    table_contents = [[
+        "variable combination",
+        "linear correlation",
+        "correlation p-value"
+    ]]
+    variable_collections_combinations = list(itertools.combinations(variable_collection, 2))
+    for variable_combination in variable_collections_combinations:
+        variable_1_values = variable_combination[0][0]
+        variable_1_name = variable_combination[0][1]
+        variable_2_values = variable_combination[1][0]
+        variable_2_name = variable_combination[1][1]
+        label = variable_1_name + " versus " + variable_2_name
+        r, p_value = correlation_linear(variable_1_values, variable_2_values)
+        table_contents.append([label, str(r), str(p_value)])
+
+    print(pyprel.Table(
+        contents = table_contents
+    ))
+
+    save_graph_all_combinations_matplotlib(
+        variables        = variables,
+        variables_names  = variables_names,
+        title            = "variable correlations",
+        filename         = "variable_correlations.png"
+    )
 
 def frange(x, y, step):
     while x < y:
