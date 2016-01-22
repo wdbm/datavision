@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-01-22T1624Z"
+version = "2016-01-22T1650Z"
 
 import sys
 import math
@@ -420,11 +420,12 @@ def analyze_correlations(
 
     # Loop over all pair combinations of variable values with their respective
     # names and calculate their correlations. Generate and print a table.
-    table_contents = [[
+    table_title = [[
         "variable combination",
         "linear correlation",
         "correlation p-value"
     ]]
+    table_contents = []
     variable_collections_combinations = list(itertools.combinations(variable_collection, 2))
     for variable_combination in variable_collections_combinations:
         variable_1_values = variable_combination[0][0]
@@ -434,6 +435,16 @@ def analyze_correlations(
         label = variable_1_name + " versus " + variable_2_name
         r, p_value = correlation_linear(variable_1_values, variable_2_values)
         table_contents.append([label, str(r), str(p_value)])
+
+    # Order the table contents by correlation.
+    from operator import itemgetter
+    table_contents_sorted = sorted(
+        table_contents,
+        key     = itemgetter(1),
+        reverse = True
+    )
+    table_contents = table_title
+    table_contents.extend(table_contents_sorted)
 
     print(pyprel.Table(
         contents = table_contents
