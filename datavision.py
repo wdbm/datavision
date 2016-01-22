@@ -31,14 +31,14 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-01-21T1358Z"
+version = "2016-01-22T1332Z"
 
 import sys
 import math
 import random
 import matplotlib.pyplot
-from matplotlib.ticker import ScalarFormatter, FormatStrFormatter
 import numpy
+import scipy.stats
 import pyprel
 import shijian
 
@@ -378,6 +378,34 @@ def interquartile_range(
     interquartile_range = numpy.percentile(values, 75) -\
                           numpy.percentile(values, 25)
     return interquartile_range
+
+def correlation_linear(
+    values_1,
+    values_2,
+    printout = None
+    ):
+    """
+    This function calculates the Pearson product-moment correlation coefficient.
+    This is a measure of the linear collelation of two variables. The value can
+    be between +1 and -1 inclusive, where 1 is total positive correlation, 0 is
+    no correlation and -1 is total negative correlation. It is a measure of the
+    linear dependence between two variables.
+
+    This function also calculates the significance (2-tailed p-value) of the
+    correlation coefficient given the sample size.
+    """
+    r, p_value = scipy.stats.pearsonr(values_1, values_2)
+    if printout is not True:
+        return r, p_value
+    else:
+        text = (
+            "Pearson linear correlation coefficient: {r}\n"
+            "2-tailed p-value: {p_value}"
+        ).format(
+            r       = r,
+            p_value = p_value
+        )
+        return text
 
 def frange(x, y, step):
     while x < y:
