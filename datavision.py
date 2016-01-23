@@ -31,12 +31,13 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-01-22T1650Z"
+version = "2016-01-23T0045Z"
 
 import sys
 import math
 import random
 import itertools
+import operator
 import matplotlib.pyplot
 import numpy
 import scipy.stats
@@ -409,8 +410,9 @@ def correlation_linear(
         return text
 
 def analyze_correlations(
-    variables       = None,
-    variables_names = None
+    variables            = None,
+    variables_names      = None,
+    table_order_variable = "r"
     ):
 
     # Create a list of variable values combined with their names.
@@ -436,11 +438,14 @@ def analyze_correlations(
         r, p_value = correlation_linear(variable_1_values, variable_2_values)
         table_contents.append([label, str(r), str(p_value)])
 
-    # Order the table contents by correlation.
-    from operator import itemgetter
+    # Order the table contents by correlation or p-value.
+    if table_order_variable == "r":
+        table_order_variable_index = 1
+    if table_order_variable == "p_value":
+        table_order_variable_index = 2
     table_contents_sorted = sorted(
         table_contents,
-        key     = itemgetter(1),
+        key     = operator.itemgetter(table_order_variable_index),
         reverse = True
     )
     table_contents = table_title
@@ -530,7 +535,7 @@ def save_graph_all_combinations_matplotlib(
             overwrite = overwrite
         )
 
-    marker_size = 20
+    marker_size = 1
 
     # Turn off scientific notation.
     matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
@@ -547,10 +552,11 @@ def save_graph_all_combinations_matplotlib(
     # names and add them to the plot.
     variable_collections_combinations = list(itertools.combinations(variable_collection, 2))
     number_of_combinations = len(variable_collections_combinations)
-    palette = pyprel.access_palette()
+    palette = pyprel.access_palette(name = "palette21")
     palette.extend_palette(
         minimum_number_of_colors_needed = number_of_combinations
     )
+    palette.save_image_of_palette()
     for variable_combination, color in zip(
         variable_collections_combinations,
         palette
@@ -570,8 +576,17 @@ def save_graph_all_combinations_matplotlib(
         )
     matplotlib.pyplot.xlabel(label_x)
     matplotlib.pyplot.ylabel(label_y)
-    matplotlib.pyplot.legend(loc = "best")
-    matplotlib.pyplot.savefig(filename)
+    legend = matplotlib.pyplot.legend(
+        #loc      = "best",
+        loc      = "center left",
+        bbox_to_anchor=(1, 0.5),
+        fontsize = 10
+    )
+    matplotlib.pyplot.savefig(
+        filename,
+        bbox_extra_artists = (legend,),
+        bbox_inches = "tight"
+    )
     matplotlib.pyplot.close()
 
 def save_histogram_matplotlib(
@@ -652,7 +667,7 @@ def save_histogram_comparison_matplotlib(
     bar_width = 0.8
     figure, (axis_1, axis_2) = matplotlib.pyplot.subplots(
         nrows       = 2,
-        gridspec_kw = {'height_ratios':(2, 1)}
+        gridspec_kw = {'height_ratios': (2, 1)}
     )
     ns, bins, patches = axis_1.hist(
         values,
