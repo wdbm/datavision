@@ -31,8 +31,9 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-01-23T0045Z"
+version = "2016-01-26T1714Z"
 
+import os
 import sys
 import math
 import random
@@ -259,7 +260,10 @@ class Matrix(list):
             filename  = filename,
             overwrite = overwrite
         )
-        matplotlib.pyplot.savefig(filename_proposed)
+        matplotlib.pyplot.savefig(
+            filename_proposed,
+            dpi = 700
+        )
 
     def close_plot(self):
         matplotlib.pyplot.figure(str(self._plot_number))
@@ -316,7 +320,10 @@ def plot_list(
                 filename  = filename,
                 overwrite = overwrite
             )
-            matplotlib.pyplot.savefig(filename_proposed)
+            matplotlib.pyplot.savefig(
+                filename_proposed,
+                dpi = 700
+            )
 
 def normalize(
     x,
@@ -412,7 +419,11 @@ def correlation_linear(
 def analyze_correlations(
     variables            = None,
     variables_names      = None,
-    table_order_variable = "r"
+    table_order_variable = "r",
+    combined_graph       = True,
+    individual_graphs    = True,
+    generate_plots       = True,
+    directory            = "analysis_correlations"
     ):
 
     # Create a list of variable values combined with their names.
@@ -454,13 +465,21 @@ def analyze_correlations(
     print(pyprel.Table(
         contents = table_contents
     ))
-
-    save_graph_all_combinations_matplotlib(
-        variables        = variables,
-        variables_names  = variables_names,
-        title            = "variable correlations",
-        filename         = "variable_correlations.png"
-    )
+    if generate_plots is True:
+        if combined_graph is True:
+            save_graph_all_combinations_matplotlib(
+                variables        = variables,
+                variables_names  = variables_names,
+                title            = "variable correlations",
+                filename         = "variable_correlations.png",
+                directory        = "analysis_correlations"
+            )
+        if individual_graphs is True:
+            save_graphs_all_combinations_matplotlib(
+                variables        = variables,
+                variables_names  = variables_names,
+                directory        = "analysis_correlations"
+            )
 
 def frange(x, y, step):
     while x < y:
@@ -521,6 +540,7 @@ def save_graph_all_combinations_matplotlib(
     label_x          = "",
     label_y          = "",
     filename         = None,
+    directory        = ".",
     overwrite        = True,
     LaTeX            = False
     ):
@@ -556,16 +576,15 @@ def save_graph_all_combinations_matplotlib(
     palette.extend_palette(
         minimum_number_of_colors_needed = number_of_combinations
     )
-    palette.save_image_of_palette()
     for variable_combination, color in zip(
         variable_collections_combinations,
         palette
         ):
         variable_1_values = variable_combination[0][0]
-        variable_1_name = variable_combination[0][1]
+        variable_1_name   = variable_combination[0][1]
         variable_2_values = variable_combination[1][0]
-        variable_2_name = variable_combination[1][1]
-        label = variable_1_name + " versus " + variable_2_name
+        variable_2_name   = variable_combination[1][1]
+        label             = variable_1_name + " versus " + variable_2_name
         matplotlib.pyplot.scatter(
             variable_1_values,
             variable_2_values,
@@ -577,21 +596,96 @@ def save_graph_all_combinations_matplotlib(
     matplotlib.pyplot.xlabel(label_x)
     matplotlib.pyplot.ylabel(label_y)
     legend = matplotlib.pyplot.legend(
-        #loc      = "best",
-        loc      = "center left",
-        bbox_to_anchor=(1, 0.5),
-        fontsize = 10
+        #loc            = "best",
+        loc            = "center left",
+        bbox_to_anchor = (1, 0.5),
+        fontsize       = 10
     )
+    if not os.path.exists(directory):
+        os.makedirs(directory)
     matplotlib.pyplot.savefig(
-        filename,
+        directory + "/" + filename,
         bbox_extra_artists = (legend,),
-        bbox_inches = "tight"
+        bbox_inches        = "tight",
+        dpi                = 700
     )
     matplotlib.pyplot.close()
+
+def save_graphs_all_combinations_matplotlib(
+    variables        = None,
+    variables_names  = None,
+    directory        = ".",
+    overwrite        = True,
+    LaTeX            = False
+    ):
+
+    matplotlib.pyplot.ioff()
+    if LaTeX is True:
+        matplotlib.pyplot.rc("text", usetex = True)
+        matplotlib.pyplot.rc("font", family = "serif")
+
+    marker_size = 1
+
+    # Turn off scientific notation.
+    #matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    # Create a list of variable values combined with their names.
+    variable_collection = []
+    for variable, variable_name in zip(variables, variables_names):
+        variable_collection.append([variable, variable_name])
+
+    # Loop over all pair combinations of variable values with their respective
+    # names and plot them.
+    variable_collections_combinations = list(itertools.combinations(variable_collection, 2))
+    number_of_combinations = len(variable_collections_combinations)
+    for variable_combination in variable_collections_combinations:
+        variable_1_values = variable_combination[0][0]
+        variable_1_name   = variable_combination[0][1]
+        variable_2_values = variable_combination[1][0]
+        variable_2_name   = variable_combination[1][1]
+        label             = variable_1_name + " versus " + variable_2_name
+        label_x           = variable_1_name
+        label_y           = variable_2_name
+        filename = shijian.propose_filename(
+            filename  = directory + "/" + label.replace(" ", "_") + ".png",
+            overwrite = overwrite
+        )
+        figure = matplotlib.pyplot.figure()
+        figure.suptitle(label, fontsize = 20)
+        #figure.set_size_inches(7.87, 7.87)
+        #figure.tight_layout()
+        matplotlib.pyplot.scatter(
+            variable_1_values,
+            variable_2_values,
+            s          = marker_size,
+            c          = "#000000",
+            edgecolors = "none",
+            #label      = label,
+        )
+        matplotlib.pyplot.xlabel(label_x)
+        matplotlib.pyplot.ylabel(label_y)
+        #legend = matplotlib.pyplot.legend(
+        #    #loc            = "best",
+        #    loc            = "center left",
+        #    bbox_to_anchor = (1, 0.5),
+        #    fontsize       = 10
+        #)
+        #print("save {filename}".format(filename = filename))
+        matplotlib.pyplot.savefig(
+            filename,
+            #bbox_extra_artists = (legend,),
+            bbox_inches = "tight",
+            dpi         = 700
+        )
+        matplotlib.pyplot.close()
 
 def save_histogram_matplotlib(
     values,
     filename       = None,
+    directory      = ".",
     number_of_bins = None,
     color_fill     = "#3861AA",
     color_edge     = "none",
@@ -627,13 +721,19 @@ def save_histogram_matplotlib(
     matplotlib.pyplot.ylabel(label_y)
     matplotlib.pyplot.title(title)
     matplotlib.pyplot.subplots_adjust(left = 0.15)
-    matplotlib.pyplot.savefig(filename)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    matplotlib.pyplot.savefig(
+        directory + "/" + filename,
+        dpi = 700
+    )
     matplotlib.pyplot.close()
 
 def save_histogram_comparison_matplotlib(
     values_1       = None,
     values_2       = None,
     filename       = None,
+    directory      = ".",
     number_of_bins = None,
     normalize      = True,
     label_x        = "",
@@ -700,7 +800,12 @@ def save_histogram_comparison_matplotlib(
     axis_2.set_xlabel(label_ratio_x)
     axis_2.set_ylabel(label_ratio_y)
     matplotlib.pyplot.suptitle(title)
-    matplotlib.pyplot.savefig(filename)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    matplotlib.pyplot.savefig(
+        directory + "/" + filename,
+        dpi = 700
+    )
     matplotlib.pyplot.close()
 
 class Qunti(list):

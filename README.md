@@ -8,9 +8,11 @@ Python data visualisation
 sudo apt-get -y install python
 sudo apt-get -y install python-matplotlib
 sudo pip install shijian
+sudo pip install pyprel
+sudo pip install datavision
+
 git clone https://github.com/wdbm/datavision.git
 cd datavision/
-wget https://raw.githubusercontent.com/wdbm/pyprel/master/pyprel.py
 python examples_1.py
 python examples_2.py
 python example_data_1.py
@@ -25,6 +27,9 @@ sudo apt-get -y install python
 sudo apt-get -y install python3
 sudo apt-get -y install python-matplotlib
 sudo apt-get -y install python3-matplotlib
+sudo pip install shijian
+sudo pip install pyprel
+sudo pip install datavision
 ```
 
 ### OS X
@@ -33,6 +38,9 @@ sudo apt-get -y install python3-matplotlib
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 brew install python3
 pip3 install matplotlib
+pip install shijian
+pip install pyprel
+pip install datavision
 ```
 
 ## run
@@ -40,7 +48,6 @@ pip3 install matplotlib
 ```Bash
 git clone https://github.com/wdbm/datavision.git
 cd datavision/
-wget https://raw.githubusercontent.com/wdbm/shijian/master/shijian.py
 python examples_1.py
 python examples_2.py
 ```
