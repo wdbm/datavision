@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-01-26T1714Z"
+version = "2016-01-29T1659Z"
 
 import os
 import sys
@@ -153,10 +153,12 @@ class Dataset(object):
             )
 
     def preprocess_all(
-        self
+        self,
+        skip_variables = ["class"]
     ):
         for name in self.variables():
-            self.preprocess(name = name)
+            if name not in skip_variables:
+                self.preprocess(name = name)
 
     def shuffle(
         self,
@@ -387,6 +389,36 @@ def interquartile_range(
     interquartile_range = numpy.percentile(values, 75) -\
                           numpy.percentile(values, 25)
     return interquartile_range
+
+def list_element_combinations_variadic(
+    elements_specification
+    ):
+    """
+    This function accepts a specification of lists of elements for each place in
+    lists in the form of a list, the elements of which are lists of possible
+    elements and returns a list of lists corresponding to the combinations of
+    elements of the specification with varying numbers of elements.
+
+    For example, the list elements specification [[10, 20], [30, 40], [50, 60]]
+    yields the following lists:
+
+    [10]
+    [20]
+    [10, 30]
+    [10, 40]
+    [20, 30]
+    [20, 40]
+    [10, 30, 50]
+    [10, 30, 60]
+    [10, 40, 50]
+    [10, 40, 60]
+    [20, 30, 50]
+    [20, 30, 60]
+    [20, 40, 50]
+    [20, 40, 60]
+    """
+    lists = [list(list_generated) for index, element_specification in enumerate(elements_specification) for list_generated in itertools.product(*elements_specification[:index + 1])]
+    return lists
 
 def correlation_linear(
     values_1,
