@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-02-03T0103Z"
+version = "2016-02-03T1402Z"
 
 import os
 import sys
@@ -755,7 +755,8 @@ def save_parallel_coordinates_matplotlib(
     figure, axes        = matplotlib.pyplot.subplots(
         1,
         dimensions - 1,
-        sharey = False
+        sharey  = False,
+        figsize = (14, 14)
     )
 
     # If no list of line styles is set, create a list of colors for lines.
