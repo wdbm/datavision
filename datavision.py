@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-01-29T1659Z"
+version = "2016-02-03T0103Z"
 
 import os
 import sys
@@ -586,6 +586,11 @@ def save_graph_all_combinations_matplotlib(
             filename  = title.replace(" ", "_") + ".png",
             overwrite = overwrite
         )
+    else:
+        filename = shijian.propose_filename(
+            filename  = filename,
+            overwrite = overwrite
+        )
 
     marker_size = 1
 
@@ -593,7 +598,6 @@ def save_graph_all_combinations_matplotlib(
     matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
     
     figure = matplotlib.pyplot.figure()
-    figure.suptitle(title, fontsize = 20)
 
     # Create a list of variable values combined with their names.
     variable_collection = []
@@ -625,6 +629,9 @@ def save_graph_all_combinations_matplotlib(
             edgecolors = "none",
             label      = label,
         )
+
+    if title is not None:
+        figure.suptitle(title, fontsize = 20)
     matplotlib.pyplot.xlabel(label_x)
     matplotlib.pyplot.ylabel(label_y)
     legend = matplotlib.pyplot.legend(
@@ -714,6 +721,139 @@ def save_graphs_all_combinations_matplotlib(
         )
         matplotlib.pyplot.close()
 
+def save_parallel_coordinates_matplotlib(
+    datasets,
+    styles              = None,
+    title               = None,
+    label_x             = "",
+    label_y             = "",
+    labels_ticks_x_axis = None, # under consideration
+    filename            = None,
+    directory           = ".",
+    overwrite           = True,
+    LaTeX               = False
+    ):
+
+    matplotlib.pyplot.ioff()
+    if LaTeX is True:
+        matplotlib.pyplot.rc("text", usetex = True)
+        matplotlib.pyplot.rc("font", family = "serif")
+    if filename is None:
+        filename = shijian.propose_filename(
+            filename  = title.replace(" ", "_") + ".png",
+            overwrite = overwrite
+        )
+    else:
+        filename = shijian.propose_filename(
+            filename  = filename,
+            overwrite = overwrite
+        )
+
+    dimensions = len(datasets[0])
+    if labels_ticks_x_axis is None:
+        labels_ticks_x_axis = range(dimensions)
+    figure, axes        = matplotlib.pyplot.subplots(
+        1,
+        dimensions - 1,
+        sharey = False
+    )
+
+    # If no list of line styles is set, create a list of colors for lines.
+    if styles is None:
+        colors = pyprel.access_palette(
+            name = "palette21",
+            minimum_number_of_colors_needed = len(datasets)
+        )
+        styles = colors
+
+    # Calculate limits of data for each feature.
+    range_minimum_maximum = list()
+    for dataset in zip(*datasets):
+        minimum_value = min(dataset)
+        maximum_value = max(dataset)
+        if minimum_value == maximum_value:
+            minimum_value -= 0.5
+            maximum_value = minimum_value + 1.
+        range_of_values = float(maximum_value - minimum_value)
+        range_minimum_maximum.append((
+            minimum_value,
+            maximum_value,
+            range_of_values
+        ))
+
+    # Normalize datasets.
+    datasets_normalized = list()
+    for dataset in datasets:
+        dataset_normalized = [
+            (value - range_minimum_maximum[dimension][0]) /
+            range_minimum_maximum[dimension][2]
+            for dimension, value in enumerate(dataset)
+        ]
+        datasets_normalized.append(dataset_normalized)
+    datasets = datasets_normalized
+
+    # Plot datasets on all subplots.
+    for index_axis, axis in enumerate(axes):
+        for index_dataset, dataset in enumerate(datasets):
+            axis.plot(labels_ticks_x_axis, dataset, styles[index_dataset])
+        axis.set_xlim([
+            labels_ticks_x_axis[index_axis],
+            labels_ticks_x_axis[index_axis + 1]
+        ])
+
+    # Set all y-axis ticks except last.
+    for dimension, (axes_most, label_tick_x_axis) in enumerate(zip(axes, labels_ticks_x_axis[:-1])):
+        axes_most.xaxis.set_major_locator(matplotlib.ticker.FixedLocator([label_tick_x_axis]))
+        number_of_ticks    = len(axes_most.get_yticklabels())
+        labels_ticks       = list()
+        step_ticks         = range_minimum_maximum[dimension][2] / (number_of_ticks - 1)
+        value_minimum_tick = range_minimum_maximum[dimension][0]
+        labels_ticks = [
+            "{value:4.2f}".format(
+                value = (value_minimum_tick + index_tick * step_ticks)
+            ) for index_tick in xrange(number_of_ticks)
+        ]
+        axes_most.set_yticklabels(labels_ticks)
+
+    # Set all last y-axis ticks to the right of the plot.
+    axes_last = matplotlib.pyplot.twinx(axes[-1])
+    dimension += 1
+    axes_last.xaxis.set_major_locator(matplotlib.ticker.FixedLocator([
+        labels_ticks_x_axis[-2], labels_ticks_x_axis[-1]
+    ]))
+    number_of_ticks    = len(axes_last.get_yticklabels())
+    step_ticks         = range_minimum_maximum[dimension][2] / (number_of_ticks - 1)
+    value_minimum_tick = range_minimum_maximum[dimension][0]
+    labels_ticks = [
+        "{value:4.2f}".format(
+            value = (value_minimum_tick + index_tick * step_ticks)
+        ) for index_tick in xrange(number_of_ticks)
+    ]
+    axes_last.set_yticklabels(labels_ticks)
+
+    # Stack subplots.
+    matplotlib.pyplot.subplots_adjust(wspace = 0)
+
+    if title is not None:
+        figure.suptitle(title, fontsize = 20)
+    matplotlib.pyplot.xlabel(label_x)
+    matplotlib.pyplot.ylabel(label_y)
+    #legend = matplotlib.pyplot.legend(
+    #    #loc            = "best",
+    #    loc            = "center left",
+    #    bbox_to_anchor = (1, 0.5),
+    #    fontsize       = 10
+    #)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    matplotlib.pyplot.savefig(
+        directory + "/" + filename,
+        #bbox_extra_artists = (legend,),
+        bbox_inches        = "tight",
+        dpi                = 700
+    )
+    matplotlib.pyplot.close()
+
 def save_histogram_matplotlib(
     values,
     filename       = None,
@@ -738,6 +878,11 @@ def save_histogram_matplotlib(
     if filename is None:
         filename = shijian.propose_filename(
             filename  = title.replace(" ", "_") + ".png",
+            overwrite = overwrite
+        )
+    else:
+        filename = shijian.propose_filename(
+            filename  = filename,
             overwrite = overwrite
         )
 
@@ -790,6 +935,11 @@ def save_histogram_comparison_matplotlib(
     if filename is None:
         filename = shijian.propose_filename(
             filename  = title.replace(" ", "_") + ".png",
+            overwrite = overwrite
+        )
+    else:
+        filename = shijian.propose_filename(
+            filename  = filename,
             overwrite = overwrite
         )
 

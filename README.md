@@ -153,7 +153,11 @@ It can visualise graphs and histograms in a terminal:
 
 It can plot all combinations of variables:
 
-![](images/variable_correlations.png)
+![](images/variable_correlations_1.png)
+
+It can plot all parallel coordinates:
+
+![](images/parallel_coordinates_1.png)
 
 # prerequisites
 
