@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-02-03T1402Z"
+version = "2016-02-11T1235Z"
 
 import os
 import sys
@@ -86,9 +86,9 @@ class Dataset(object):
         self,
         index = 0
     ):
-        return [
+        return sorted([
             variable for variable, value in self._data[self._index].iteritems()
-        ]
+        ])
 
     def values(
         self,
@@ -184,6 +184,22 @@ class Dataset(object):
                 name = name,
                 seed = seed
             )
+
+    def add(
+        self,
+        dataset = None
+    ):
+        index_current_maximum = max(self.indices())
+        for index_offset, index in enumerate(dataset.indices()):
+            for name in dataset.variables():
+                self.variable(
+                    index = index_current_maximum + 1 + index_offset,
+                    name  = name,
+                    value = dataset.variable(
+                                index = index,
+                                name  = name
+                            )
+                )
 
 class Matrix(list):
     
