@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-02-11T1235Z"
+version = "2016-03-02T1059Z"
 
 import os
 import sys
@@ -342,6 +342,25 @@ def plot_list(
                 filename_proposed,
                 dpi = 700
             )
+
+def dot_product(v1, v2):
+    return(sum((a*b) for a, b in zip(v1, v2)))
+
+def magnitude(v):
+    return(numpy.linalg.norm(v))
+    #return(math.sqrt(dot_product(v, v)))
+
+def angle(v1, v2):
+    cosine = dot_product(v1, v2) / (magnitude(v1) * magnitude(v2))
+    cosine = 1 if cosine > 1 else cosine
+    return(math.acos(cosine))
+
+def composite_variable(x):
+    k = len(x) + 1
+    variable = 0
+    for index, element in enumerate(x):
+        variable += k**(index - 1) * element
+    return variable
 
 def normalize(
     x,
