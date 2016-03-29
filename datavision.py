@@ -31,17 +31,19 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-03-02T1059Z"
+version = "2016-03-29T1600Z"
 
-import os
-import sys
-import math
-import random
 import itertools
-import operator
+import math
 import matplotlib.pyplot
 import numpy
+import operator
+import os
+import PIL.Image
+import random
 import scipy.stats
+import sys
+
 import pyprel
 import shijian
 
@@ -2147,3 +2149,14 @@ def reverse_y(matrix):
     reverse y-axis of 2D matrix
     """
     return [list(reversed(matrix_i)) for matrix_i in matrix]
+
+def difference_RMS_images(
+    filename_1 = None,
+    filename_2 = None
+    ):
+    histogram_1 = PIL.Image.open(filename_1).histogram()
+    histogram_2 = PIL.Image.open(filename_2).histogram()
+    RMS = math.sqrt(reduce(operator.add, map(
+        lambda a, b: (a - b)**2, histogram_1, histogram_2)) / len(histogram_1)
+    )
+    return RMS
