@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-03-29T1600Z"
+version = "2016-03-29T1817Z"
 
 import itertools
 import math
@@ -2156,7 +2156,10 @@ def difference_RMS_images(
     ):
     histogram_1 = PIL.Image.open(filename_1).histogram()
     histogram_2 = PIL.Image.open(filename_2).histogram()
-    RMS = math.sqrt(reduce(operator.add, map(
-        lambda a, b: (a - b)**2, histogram_1, histogram_2)) / len(histogram_1)
-    )
+    try:
+        RMS = math.sqrt(reduce(operator.add, map(
+            lambda a, b: (a - b)**2, histogram_1, histogram_2)) / len(histogram_1)
+        )
+    except:
+        RMS = None
     return RMS
