@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-03-29T1817Z"
+version = "2016-04-12T2307Z"
 
 import itertools
 import math
@@ -344,6 +344,43 @@ def plot_list(
                 filename_proposed,
                 dpi = 700
             )
+
+def save_FFT_plot_matplotlib(
+    values                 = None,
+    sample_rate            = 150,
+    filename               = "FFT.png",
+    title_axis_x_amplitude = "time",
+    title_axis_y_amplitude = "amplitude",
+    title_axis_x_FFT       = "frequency",
+    title_axis_y_FFT       = "|weighting|"
+    ):
+
+    values_amplitude  = values
+    sampling_interval = 1 / sample_rate
+    values_time       = numpy.arange(0, 1, sampling_interval)
+    signal_length     = len(values_amplitude)
+    values_indices    = numpy.arange(signal_length)
+    time              = signal_length / sample_rate
+    # two sides frequency range
+    frequencies       = values_indices / time
+    # one side frequency range
+    frequencies       = frequencies[range(int(signal_length / 2))] 
+    # FFT
+    weightings        = numpy.fft.fft(values_amplitude) / signal_length
+    # normalization
+    weightings        = weightings[range(int(signal_length / 2))]
+
+    figure, axes      = matplotlib.pyplot.subplots(2, 1)
+    # plot amplitude versus time
+    axes[0].plot(values_time, values_amplitude)
+    axes[0].set_xlabel(title_axis_x_amplitude)
+    axes[0].set_ylabel(title_axis_y_amplitude)
+    # plot FFT
+    axes[1].plot(frequencies, abs(weightings), "r")
+    axes[1].set_xlabel(title_axis_x_FFT)
+    axes[1].set_ylabel(title_axis_y_FFT)
+
+    figure.savefig(filename)
 
 def dot_product(v1, v2):
     return(sum((a*b) for a, b in zip(v1, v2)))
