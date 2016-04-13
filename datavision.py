@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-04-12T2307Z"
+version = "2016-04-13T1249Z"
 
 import itertools
 import math
@@ -345,9 +345,21 @@ def plot_list(
                 dpi = 700
             )
 
+def generate_sine_values(
+    frequency   = 5,
+    sample_rate = 16000,
+    time        = 10
+    ):
+    sampling_interval = time / sample_rate
+    values_time       = numpy.arange(0, time, sampling_interval)
+    values_amplitude  = numpy.sin(2 * numpy.pi * frequency * values_time)
+    return values_amplitude, values_time
+
 def save_FFT_plot_matplotlib(
-    values                 = None,
-    sample_rate            = 150,
+    values_amplitude       = None,
+    values_time            = None,
+    time                   = None,
+    sample_rate            = 16000,
     filename               = "FFT.png",
     title_axis_x_amplitude = "time",
     title_axis_y_amplitude = "amplitude",
@@ -355,12 +367,13 @@ def save_FFT_plot_matplotlib(
     title_axis_y_FFT       = "|weighting|"
     ):
 
-    values_amplitude  = values
-    sampling_interval = 1 / sample_rate
-    values_time       = numpy.arange(0, 1, sampling_interval)
+    if values_time is None:
+        sampling_interval = time / sample_rate
+        values_time       = numpy.arange(0, time, sampling_interval)
     signal_length     = len(values_amplitude)
     values_indices    = numpy.arange(signal_length)
-    time              = signal_length / sample_rate
+    if time is None:
+        time = signal_length / sample_rate
     # two sides frequency range
     frequencies       = values_indices / time
     # one side frequency range
@@ -383,7 +396,7 @@ def save_FFT_plot_matplotlib(
     figure.savefig(filename)
 
 def dot_product(v1, v2):
-    return(sum((a*b) for a, b in zip(v1, v2)))
+    return(sum((a * b) for a, b in zip(v1, v2)))
 
 def magnitude(v):
     return(numpy.linalg.norm(v))
