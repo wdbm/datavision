@@ -159,6 +159,10 @@ It can plot all parallel coordinates:
 
 ![](images/parallel_coordinates_1.png)
 
+It can perform FFT:
+
+![](images/FFT.png)
+
 # prerequisites
 
 ## Python 2 or Python 3
