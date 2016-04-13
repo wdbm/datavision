@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-04-13T1249Z"
+version = "2016-04-13T1555Z"
 
 import itertools
 import math
@@ -355,6 +355,41 @@ def generate_sine_values(
     values_amplitude  = numpy.sin(2 * numpy.pi * frequency * values_time)
     return values_amplitude, values_time
 
+def greatest_frequency_contributions_FFT(
+    values_amplitude        = None,
+    values_time             = None,
+    time                    = None,
+    sample_rate             = 16000,
+    number_of_contributions = 10
+    ):
+
+    if values_time is None:
+        sampling_interval = time / sample_rate
+        values_time       = numpy.arange(0, time, sampling_interval)
+    signal_length     = len(values_amplitude)
+    values_indices    = numpy.arange(signal_length)
+    if time is None:
+        time = signal_length / sample_rate
+    values_time = numpy.linspace(0, time, num = signal_length)
+    # two sides frequency range
+    frequencies       = values_indices / time
+    # one side frequency range
+    frequencies       = frequencies[range(int(signal_length / 2))] 
+    # FFT
+    weightings        = numpy.fft.fft(values_amplitude) / signal_length
+    # normalization
+    weightings        = weightings[range(int(signal_length / 2))]
+
+    weightings_absolute = [abs(weighting) for weighting in list(weightings)]
+
+    indices = shijian.indices_of_greatest_values(
+        weightings_absolute,
+        number = number_of_contributions
+    )
+    frequencies = [frequencies[index] for index in indices]
+
+    return frequencies
+
 def save_FFT_plot_matplotlib(
     values_amplitude       = None,
     values_time            = None,
@@ -374,6 +409,7 @@ def save_FFT_plot_matplotlib(
     values_indices    = numpy.arange(signal_length)
     if time is None:
         time = signal_length / sample_rate
+    values_time = numpy.linspace(0, time, num = signal_length)
     # two sides frequency range
     frequencies       = values_indices / time
     # one side frequency range
@@ -385,15 +421,18 @@ def save_FFT_plot_matplotlib(
 
     figure, axes      = matplotlib.pyplot.subplots(2, 1)
     # plot amplitude versus time
-    axes[0].plot(values_time, values_amplitude)
+    axes[0].plot(values_time, values_amplitude, "b", linewidth = 0.5)
     axes[0].set_xlabel(title_axis_x_amplitude)
     axes[0].set_ylabel(title_axis_y_amplitude)
     # plot FFT
-    axes[1].plot(frequencies, abs(weightings), "r")
+    axes[1].plot(frequencies, abs(weightings), "r", linewidth = 0.5)
     axes[1].set_xlabel(title_axis_x_FFT)
     axes[1].set_ylabel(title_axis_y_FFT)
 
-    figure.savefig(filename)
+    figure.savefig(
+        filename,
+        dpi = 700
+    )
 
 def dot_product(v1, v2):
     return(sum((a * b) for a, b in zip(v1, v2)))
