@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-04-14T0611Z"
+version = "2016-04-14T1500Z"
 
 import itertools
 import math
@@ -362,7 +362,7 @@ def generate_composite_sine_values(
     ):
     values_amplitude_list = []
     for frequency in frequencies:
-        values_amplitude, values_time = datavision.generate_sine_values(
+        values_amplitude, values_time = generate_sine_values(
             frequency   = frequency,
             time        = time,
             sample_rate = sample_rate
