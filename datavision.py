@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-04-13T1555Z"
+version = "2016-04-14T0611Z"
 
 import itertools
 import math
@@ -354,6 +354,22 @@ def generate_sine_values(
     values_time       = numpy.arange(0, time, sampling_interval)
     values_amplitude  = numpy.sin(2 * numpy.pi * frequency * values_time)
     return values_amplitude, values_time
+
+def generate_composite_sine_values(
+    frequencies = [5, 10, 15],
+    sample_rate = 16000,
+    time        = 10
+    ):
+    values_amplitude_list = []
+    for frequency in frequencies:
+        values_amplitude, values_time = datavision.generate_sine_values(
+            frequency   = frequency,
+            time        = time,
+            sample_rate = sample_rate
+        )
+        values_amplitude_list.append(values_amplitude)
+    values_amplitude_sum = sum(values_amplitude_list)
+    return values_amplitude_sum, values_time
 
 def greatest_frequency_contributions_FFT(
     values_amplitude        = None,
