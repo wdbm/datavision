@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-04-14T1500Z"
+version = "2016-04-15T1420Z"
 
 import itertools
 import math
@@ -259,13 +259,13 @@ class Matrix(list):
             matplotlib.pyplot.draw()
         else:
             self._plot_figure, \
-            self._plot_axes      = plot_list(
-                                       list_object = self,
-                                       title       = self.title,
-                                       plot_number = self._plot_number,
-                                       plot        = False,
-                                       return_plot = True
-                                   )
+            self._plot_axes = plot_list(
+                list_object = self,
+                title       = self.title,
+                plot_number = self._plot_number,
+                plot        = False,
+                return_plot = True
+            )
             matplotlib.pyplot.figure(str(self._plot_number))
             matplotlib.pyplot.show()
             self._plot_shown = True
@@ -344,6 +344,145 @@ def plot_list(
                 filename_proposed,
                 dpi = 700
             )
+
+def save_graph_matplotlib(
+    values       = None,
+    title        = None,
+    title_axis_x = None,
+    title_axis_y = None,
+    filename     = None,
+    directory    = ".",
+    overwrite    = True,
+    color        = "black",
+    LaTeX        = False,
+    marker_size  = 1
+    ):
+
+    matplotlib.pyplot.ioff()
+    if LaTeX is True:
+        matplotlib.pyplot.rc("text", usetex = True)
+        matplotlib.pyplot.rc("font", family = "serif")
+    if filename is None:
+        filename = shijian.propose_filename(
+            filename  = title.replace(" ", "_") + ".png",
+            overwrite = overwrite
+        )
+    else:
+        filename = shijian.propose_filename(
+            filename  = filename,
+            overwrite = overwrite
+        )
+
+    # Turn off scientific notation.
+    matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
+
+    y = values
+    x = range(0, len(y))
+
+    figure = matplotlib.pyplot.figure()
+
+    if title is not None:
+        figure.suptitle(
+            title,
+            fontsize = 20
+        )
+
+    matplotlib.pyplot.scatter(
+        x,
+        y,
+        s          = marker_size,
+        c          = color,
+        edgecolors = "none"
+    )
+
+    matplotlib.pyplot.xlabel(title_axis_x)
+    matplotlib.pyplot.ylabel(title_axis_y)
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    matplotlib.pyplot.axes().set_aspect(1)
+    matplotlib.pyplot.savefig(
+        directory + "/" + filename,
+        dpi = 700
+    )
+    matplotlib.pyplot.close()
+
+def save_multigraph_matplotlib(
+    variables        = None,
+    variables_names  = None,
+    title            = None,
+    label_x          = "",
+    label_y          = "",
+    filename         = None,
+    directory        = ".",
+    overwrite        = True,
+    LaTeX            = False,
+    marker_size      = 1,
+    palette_name     = "palette21"
+    ):
+
+    matplotlib.pyplot.ioff()
+    if LaTeX is True:
+        matplotlib.pyplot.rc("text", usetex = True)
+        matplotlib.pyplot.rc("font", family = "serif")
+    if filename is None:
+        filename = shijian.propose_filename(
+            filename  = title.replace(" ", "_") + ".png",
+            overwrite = overwrite
+        )
+    else:
+        filename = shijian.propose_filename(
+            filename  = filename,
+            overwrite = overwrite
+        )
+
+    # Turn off scientific notation.
+    matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
+
+    figure = matplotlib.pyplot.figure()
+
+    palette = pyprel.access_palette(
+        name = palette_name,
+        minimum_number_of_colors_needed = len(variables)
+    )
+    for values, name, color in zip(
+        variables,
+        variables_names,
+        palette
+        ):
+        y = values
+        x = range(0, len(y))
+        matplotlib.pyplot.scatter(
+            x,
+            y,
+            s          = marker_size,
+            c          = color,
+            edgecolors = "none",
+            label      = name,
+        )
+    if title is not None:
+        figure.suptitle(
+            title,
+            fontsize = 20
+        )
+    matplotlib.pyplot.xlabel(label_x)
+    matplotlib.pyplot.ylabel(label_y)
+    legend = matplotlib.pyplot.legend(
+        #loc            = "best",
+        loc            = "center left",
+        bbox_to_anchor = (1, 0.5),
+        fontsize       = 10
+    )
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    matplotlib.pyplot.axes().set_aspect(1)
+    matplotlib.pyplot.savefig(
+        directory + "/" + filename,
+        bbox_extra_artists = (legend,),
+        bbox_inches        = "tight",
+        dpi                = 700
+    )
+    matplotlib.pyplot.close()
 
 def generate_sine_values(
     frequency   = 5,
@@ -716,7 +855,8 @@ def save_graph_all_combinations_matplotlib(
     filename         = None,
     directory        = ".",
     overwrite        = True,
-    LaTeX            = False
+    LaTeX            = False,
+    marker_size      = 1
     ):
 
     matplotlib.pyplot.ioff()
@@ -733,8 +873,6 @@ def save_graph_all_combinations_matplotlib(
             filename  = filename,
             overwrite = overwrite
         )
-
-    marker_size = 1
 
     # Turn off scientific notation.
     matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
