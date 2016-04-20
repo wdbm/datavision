@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-04-20T1316Z"
+version = "2016-04-20T1528Z"
 
 import itertools
 import math
@@ -355,8 +355,13 @@ def save_graph_matplotlib(
     overwrite    = True,
     color        = "black",
     LaTeX        = False,
+    markers      = True,
     marker_size  = 1,
-    aspect       = 1
+    aspect       = 1,
+    line         = False,
+    line_style   = None,
+    line_width   = 0.2,
+    font_size    = 20
     ):
 
     matplotlib.pyplot.ioff()
@@ -376,6 +381,7 @@ def save_graph_matplotlib(
 
     # Turn off scientific notation.
     matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
+    matplotlib.pyplot.gca().get_yaxis().get_major_formatter().set_scientific(False)
 
     y = values
     x = range(0, len(y))
@@ -385,19 +391,29 @@ def save_graph_matplotlib(
     if title is not None:
         figure.suptitle(
             title,
-            fontsize = 20
+            fontsize = font_size
         )
 
-    matplotlib.pyplot.scatter(
-        x,
-        y,
-        s          = marker_size,
-        c          = color,
-        edgecolors = "none"
-    )
+    if markers is True:
+        matplotlib.pyplot.scatter(
+            x,
+            y,
+            s          = marker_size,
+            c          = color,
+            edgecolors = "none",
+        )
+    if line is True:
+        matplotlib.pyplot.plot(
+            x,
+            y,
+            line_style,
+            linewidth = line_width
+        )
 
-    matplotlib.pyplot.xlabel(title_axis_x)
-    matplotlib.pyplot.ylabel(title_axis_y)
+    matplotlib.pyplot.xlabel(title_axis_x, fontsize = font_size)
+    matplotlib.pyplot.ylabel(title_axis_y, fontsize = font_size)
+    matplotlib.pyplot.xticks(fontsize = font_size)
+    matplotlib.pyplot.yticks(fontsize = font_size)
 
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -440,6 +456,7 @@ def save_multigraph_matplotlib(
 
     # Turn off scientific notation.
     matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
+    matplotlib.pyplot.gca().get_yaxis().get_major_formatter().set_scientific(False)
 
     figure = matplotlib.pyplot.figure()
 
@@ -878,6 +895,7 @@ def save_graph_all_combinations_matplotlib(
 
     # Turn off scientific notation.
     matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
+    matplotlib.pyplot.gca().get_yaxis().get_major_formatter().set_scientific(False)
     
     figure = matplotlib.pyplot.figure()
 
@@ -948,7 +966,8 @@ def save_graphs_all_combinations_matplotlib(
     marker_size = 1
 
     # Turn off scientific notation.
-    #matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
+    matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
+    matplotlib.pyplot.gca().get_yaxis().get_major_formatter().set_scientific(False)
 
     if not os.path.exists(directory):
         os.makedirs(directory)

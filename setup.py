@@ -8,7 +8,7 @@ def main():
 
     setuptools.setup(
         name             = "datavision",
-        version          = "2016.04.15.1420",
+        version          = "2016.04.20.1528",
         description      = "Python data visualisation",
         long_description = Markdown_to_reStructuredText("README.md"),
         url              = "https://github.com/wdbm/datavision",
