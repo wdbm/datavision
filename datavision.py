@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-04-15T1420Z"
+version = "2016-04-20T1316Z"
 
 import itertools
 import math
@@ -355,7 +355,8 @@ def save_graph_matplotlib(
     overwrite    = True,
     color        = "black",
     LaTeX        = False,
-    marker_size  = 1
+    marker_size  = 1,
+    aspect       = 1
     ):
 
     matplotlib.pyplot.ioff()
@@ -400,7 +401,7 @@ def save_graph_matplotlib(
 
     if not os.path.exists(directory):
         os.makedirs(directory)
-    matplotlib.pyplot.axes().set_aspect(1)
+    matplotlib.pyplot.axes().set_aspect(aspect)
     matplotlib.pyplot.savefig(
         directory + "/" + filename,
         dpi = 700
@@ -418,6 +419,7 @@ def save_multigraph_matplotlib(
     overwrite        = True,
     LaTeX            = False,
     marker_size      = 1,
+    aspect           = 1,
     palette_name     = "palette21"
     ):
 
@@ -475,7 +477,7 @@ def save_multigraph_matplotlib(
     )
     if not os.path.exists(directory):
         os.makedirs(directory)
-    matplotlib.pyplot.axes().set_aspect(1)
+    matplotlib.pyplot.axes().set_aspect(aspect)
     matplotlib.pyplot.savefig(
         directory + "/" + filename,
         bbox_extra_artists = (legend,),
