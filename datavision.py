@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-04-25T1027Z"
+version = "2016-04-25T2302Z"
 
 import itertools
 import math
@@ -359,7 +359,7 @@ def save_graph_matplotlib(
     marker_size  = 1,
     aspect       = None,
     line         = False,
-    line_style   = None,
+    line_style   = "-",
     line_width   = 0.2,
     font_size    = 20
     ):
@@ -410,6 +410,7 @@ def save_graph_matplotlib(
             x,
             y,
             line_style,
+            c         = color,
             linewidth = line_width
         )
 
@@ -433,18 +434,23 @@ def save_graph_matplotlib(
     matplotlib.pyplot.close()
 
 def save_multigraph_matplotlib(
-    variables        = None,
-    variables_names  = None,
-    title            = None,
-    label_x          = "",
-    label_y          = "",
-    filename         = None,
-    directory        = ".",
-    overwrite        = True,
-    LaTeX            = False,
-    marker_size      = 1,
-    aspect           = None,
-    palette_name     = "palette21"
+    variables       = None,
+    variables_names = None,
+    title           = None,
+    label_x         = "",
+    label_y         = "",
+    filename        = None,
+    directory       = ".",
+    overwrite       = True,
+    LaTeX           = False,
+    markers         = True,
+    marker_size     = 1,
+    line            = False,
+    line_style      = "-",
+    line_width      = 0.2,
+    font_size       = 20,
+    aspect          = None,
+    palette_name    = "palette21"
     ):
 
     matplotlib.pyplot.ioff()
@@ -482,14 +488,129 @@ def save_multigraph_matplotlib(
         ):
         y = values
         x = range(0, len(y))
-        matplotlib.pyplot.scatter(
-            x,
-            y,
-            s          = marker_size,
-            c          = color,
-            edgecolors = "none",
-            label      = name,
+        if markers is True:
+            matplotlib.pyplot.scatter(
+                x,
+                y,
+                s          = marker_size,
+                c          = color,
+                edgecolors = "none",
+                label      = name,
+            )
+        if line is True:
+            matplotlib.pyplot.plot(
+                x,
+                y,
+                line_style,
+                c         = color,
+                linewidth = line_width,
+                #label     = name,
+            )
+
+    if title is not None:
+        figure.suptitle(
+            title,
+            fontsize = 20
         )
+    matplotlib.pyplot.xlabel(label_x)
+    matplotlib.pyplot.ylabel(label_y)
+    legend = matplotlib.pyplot.legend(
+        #loc            = "best",
+        loc            = "center left",
+        bbox_to_anchor = (1, 0.5),
+        fontsize       = 10
+    )
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    if aspect is None:
+        matplotlib.pyplot.axes().set_aspect(
+            1 / matplotlib.pyplot.axes().get_data_ratio()
+        )
+    else:
+        matplotlib.pyplot.axes().set_aspect(aspect)
+    matplotlib.pyplot.savefig(
+        directory + "/" + filename,
+        bbox_extra_artists = (legend,),
+        bbox_inches        = "tight",
+        dpi                = 700
+    )
+    matplotlib.pyplot.close()
+
+def save_multigraph_2D_matplotlib(
+    variables_x      = None,
+    variables_y      = None,
+    variables_names  = None,
+    title            = None,
+    label_x          = "",
+    label_y          = "",
+    filename         = None,
+    directory        = ".",
+    overwrite        = True,
+    LaTeX            = False,
+    markers         = True,
+    marker_size     = 1,
+    line            = False,
+    line_style      = "-",
+    line_width      = 0.2,
+    font_size       = 20,
+    aspect           = None,
+    palette_name     = "palette21"
+    ):
+
+    matplotlib.pyplot.ioff()
+    if LaTeX is True:
+        matplotlib.pyplot.rc("text", usetex = True)
+        matplotlib.pyplot.rc("font", family = "serif")
+    if filename is None:
+        if title is None:
+            filename = "multigraph.png"
+        else:
+            filename = shijian.propose_filename(
+                filename  = title.replace(" ", "_") + ".png",
+                overwrite = overwrite
+            )
+    else:
+        filename = shijian.propose_filename(
+            filename  = filename,
+            overwrite = overwrite
+        )
+
+    # Turn off scientific notation.
+    matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
+    matplotlib.pyplot.gca().get_yaxis().get_major_formatter().set_scientific(False)
+
+    figure = matplotlib.pyplot.figure()
+
+    palette = pyprel.access_palette(
+        name = palette_name,
+        minimum_number_of_colors_needed = len(variables_x)
+    )
+    for values_x, values_y, name, color in zip(
+        variables_x,
+        variables_y,
+        variables_names,
+        palette
+        ):
+        y = values_y
+        x = values_x
+        if markers is True:
+            matplotlib.pyplot.scatter(
+                x,
+                y,
+                s          = marker_size,
+                c          = color,
+                edgecolors = "none",
+                label      = name,
+            )
+        if line is True:
+            matplotlib.pyplot.plot(
+                x,
+                y,
+                line_style,
+                c         = color,
+                linewidth = line_width,
+                label     = name,
+            )
     if title is not None:
         figure.suptitle(
             title,
