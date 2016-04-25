@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-04-20T1528Z"
+version = "2016-04-25T1027Z"
 
 import itertools
 import math
@@ -357,7 +357,7 @@ def save_graph_matplotlib(
     LaTeX        = False,
     markers      = True,
     marker_size  = 1,
-    aspect       = 1,
+    aspect       = None,
     line         = False,
     line_style   = None,
     line_width   = 0.2,
@@ -369,10 +369,13 @@ def save_graph_matplotlib(
         matplotlib.pyplot.rc("text", usetex = True)
         matplotlib.pyplot.rc("font", family = "serif")
     if filename is None:
-        filename = shijian.propose_filename(
-            filename  = title.replace(" ", "_") + ".png",
-            overwrite = overwrite
-        )
+        if title is None:
+            filename = "graph.png"
+        else:
+            filename = shijian.propose_filename(
+                filename  = title.replace(" ", "_") + ".png",
+                overwrite = overwrite
+            )
     else:
         filename = shijian.propose_filename(
             filename  = filename,
@@ -417,7 +420,12 @@ def save_graph_matplotlib(
 
     if not os.path.exists(directory):
         os.makedirs(directory)
-    matplotlib.pyplot.axes().set_aspect(aspect)
+    if aspect is None:
+        matplotlib.pyplot.axes().set_aspect(
+            1 / matplotlib.pyplot.axes().get_data_ratio()
+        )
+    else:
+        matplotlib.pyplot.axes().set_aspect(aspect)
     matplotlib.pyplot.savefig(
         directory + "/" + filename,
         dpi = 700
@@ -435,7 +443,7 @@ def save_multigraph_matplotlib(
     overwrite        = True,
     LaTeX            = False,
     marker_size      = 1,
-    aspect           = 1,
+    aspect           = None,
     palette_name     = "palette21"
     ):
 
@@ -444,10 +452,13 @@ def save_multigraph_matplotlib(
         matplotlib.pyplot.rc("text", usetex = True)
         matplotlib.pyplot.rc("font", family = "serif")
     if filename is None:
-        filename = shijian.propose_filename(
-            filename  = title.replace(" ", "_") + ".png",
-            overwrite = overwrite
-        )
+        if title is None:
+            filename = "multigraph.png"
+        else:
+            filename = shijian.propose_filename(
+                filename  = title.replace(" ", "_") + ".png",
+                overwrite = overwrite
+            )
     else:
         filename = shijian.propose_filename(
             filename  = filename,
@@ -494,7 +505,12 @@ def save_multigraph_matplotlib(
     )
     if not os.path.exists(directory):
         os.makedirs(directory)
-    matplotlib.pyplot.axes().set_aspect(aspect)
+    if aspect is None:
+        matplotlib.pyplot.axes().set_aspect(
+            1 / matplotlib.pyplot.axes().get_data_ratio()
+        )
+    else:
+        matplotlib.pyplot.axes().set_aspect(aspect)
     matplotlib.pyplot.savefig(
         directory + "/" + filename,
         bbox_extra_artists = (legend,),
@@ -883,10 +899,13 @@ def save_graph_all_combinations_matplotlib(
         matplotlib.pyplot.rc("text", usetex = True)
         matplotlib.pyplot.rc("font", family = "serif")
     if filename is None:
-        filename = shijian.propose_filename(
-            filename  = title.replace(" ", "_") + ".png",
-            overwrite = overwrite
-        )
+        if title is None:
+            filename = "graph_all_combinations.png"
+        else:
+            filename = shijian.propose_filename(
+                filename  = title.replace(" ", "_") + ".png",
+                overwrite = overwrite
+            )
     else:
         filename = shijian.propose_filename(
             filename  = filename,
@@ -1040,10 +1059,13 @@ def save_parallel_coordinates_matplotlib(
         matplotlib.pyplot.rc("text", usetex = True)
         matplotlib.pyplot.rc("font", family = "serif")
     if filename is None:
-        filename = shijian.propose_filename(
-            filename  = title.replace(" ", "_") + ".png",
-            overwrite = overwrite
-        )
+        if title is None:
+            filename = "parallel_coordinates.png"
+        else:
+            filename = shijian.propose_filename(
+                filename  = title.replace(" ", "_") + ".png",
+                overwrite = overwrite
+            )
     else:
         filename = shijian.propose_filename(
             filename  = filename,
@@ -1168,7 +1190,9 @@ def save_histogram_matplotlib(
     label_y        = None,
     title          = None,
     overwrite      = True,
-    LaTeX          = False
+    LaTeX          = False,
+    aspect         = None,
+    font_size      = 20
     ):
 
     matplotlib.pyplot.ioff()
@@ -1178,16 +1202,18 @@ def save_histogram_matplotlib(
     if number_of_bins is None:
         number_of_bins = propose_number_of_bins(values)
     if filename is None:
-        filename = shijian.propose_filename(
-            filename  = title.replace(" ", "_") + ".png",
-            overwrite = overwrite
-        )
+        if title is None:
+            filename = "histogram.png"
+        else:
+            filename = shijian.propose_filename(
+                filename  = title.replace(" ", "_") + ".png",
+                overwrite = overwrite
+            )
     else:
         filename = shijian.propose_filename(
             filename  = filename,
             overwrite = overwrite
         )
-
     n, bins, patches = matplotlib.pyplot.hist(
         values,
         number_of_bins,
@@ -1196,12 +1222,23 @@ def save_histogram_matplotlib(
         edgecolor = color_edge,
         alpha     = 1
     )
-    matplotlib.pyplot.xlabel(label_x)
-    matplotlib.pyplot.ylabel(label_y)
-    matplotlib.pyplot.title(title)
-    matplotlib.pyplot.subplots_adjust(left = 0.15)
+    if label_x is not None:
+        matplotlib.pyplot.xlabel(label_x, fontsize = font_size)
+    if label_y is not None:
+        matplotlib.pyplot.ylabel(label_y, fontsize = font_size)
+    matplotlib.pyplot.xticks(fontsize = font_size)
+    matplotlib.pyplot.yticks(fontsize = font_size)
+    if title is not None:
+        matplotlib.pyplot.title(title, fontsize = font_size)
+    #matplotlib.pyplot.subplots_adjust(left = 0.15)
     if not os.path.exists(directory):
         os.makedirs(directory)
+    if aspect is None:
+        matplotlib.pyplot.axes().set_aspect(
+            1 / matplotlib.pyplot.axes().get_data_ratio()
+        )
+    else:
+        matplotlib.pyplot.axes().set_aspect(aspect)
     matplotlib.pyplot.savefig(
         directory + "/" + filename,
         dpi = 700
@@ -1223,7 +1260,9 @@ def save_histogram_comparison_matplotlib(
     label_1        = "1",
     label_2        = "2",
     overwrite      = True,
-    LaTeX          = False
+    LaTeX          = False,
+    #aspect         = None,
+    font_size      = 20
     ):
 
     matplotlib.pyplot.ioff()
@@ -1235,10 +1274,13 @@ def save_histogram_comparison_matplotlib(
         number_of_bins_2 = propose_number_of_bins(values_2)
         number_of_bins   = int((number_of_bins_1 + number_of_bins_2) / 2)
     if filename is None:
-        filename = shijian.propose_filename(
-            filename  = title.replace(" ", "_") + ".png",
-            overwrite = overwrite
-        )
+        if title is None:
+            filename = "histogram_comparison.png"
+        else:
+            filename = shijian.propose_filename(
+                filename  = title.replace(" ", "_") + ".png",
+                overwrite = overwrite
+            )
     else:
         filename = shijian.propose_filename(
             filename  = filename,
@@ -1251,7 +1293,7 @@ def save_histogram_comparison_matplotlib(
     bar_width = 0.8
     figure, (axis_1, axis_2) = matplotlib.pyplot.subplots(
         nrows       = 2,
-        gridspec_kw = {'height_ratios': (2, 1)}
+        gridspec_kw = {"height_ratios": (2, 1)}
     )
     ns, bins, patches = axis_1.hist(
         values,
@@ -1279,13 +1321,23 @@ def save_histogram_comparison_matplotlib(
     )
     for bar in bars:
         bar.set_color("#00B9BC")
-    axis_1.set_xlabel(label_x)
-    axis_1.set_ylabel(label_y)
-    axis_2.set_xlabel(label_ratio_x)
-    axis_2.set_ylabel(label_ratio_y)
-    matplotlib.pyplot.suptitle(title)
+    axis_1.set_xlabel(label_x, fontsize = font_size)
+    axis_1.set_ylabel(label_y, fontsize = font_size)
+    axis_2.set_xlabel(label_ratio_x, fontsize = font_size)
+    axis_2.set_ylabel(label_ratio_y, fontsize = font_size)
+    #axis_1.xticks(fontsize = font_size)
+    #axis_1.yticks(fontsize = font_size)
+    #axis_2.xticks(fontsize = font_size)
+    #axis_2.yticks(fontsize = font_size)
+    matplotlib.pyplot.suptitle(title, fontsize = font_size)
     if not os.path.exists(directory):
         os.makedirs(directory)
+    #if aspect is None:
+    #    matplotlib.pyplot.axes().set_aspect(
+    #        1 / matplotlib.pyplot.axes().get_data_ratio()
+    #    )
+    #else:
+    #    matplotlib.pyplot.axes().set_aspect(aspect)
     matplotlib.pyplot.savefig(
         directory + "/" + filename,
         dpi = 700
