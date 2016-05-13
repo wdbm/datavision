@@ -8,14 +8,20 @@ def main():
 
     setuptools.setup(
         name             = "datavision",
-        version          = "2016.04.25.2302",
+        version          = "2016.05.13.0409",
         description      = "Python data visualisation",
         long_description = Markdown_to_reStructuredText("README.md"),
         url              = "https://github.com/wdbm/datavision",
         author           = "Will Breaden Madden",
         author_email     = "w.bm@cern.ch",
         license          = "GPLv3",
-        py_modules       = ["datavision"],
+        py_modules       = [
+                           "datavision"
+                           ],
+        install_requires = [
+                           "matplotlib",
+                           "scipy"
+                           ],
         entry_points     = """
             [console_scripts]
             datavision = datavision:datavision
