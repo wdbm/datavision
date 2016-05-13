@@ -8,7 +8,7 @@ def main():
 
     setuptools.setup(
         name             = "datavision",
-        version          = "2016.05.13.0409",
+        version          = "2016.05.13.0753",
         description      = "Python data visualisation",
         long_description = Markdown_to_reStructuredText("README.md"),
         url              = "https://github.com/wdbm/datavision",
@@ -20,7 +20,11 @@ def main():
                            ],
         install_requires = [
                            "matplotlib",
-                           "scipy"
+                           "numpy",
+                           "Pillow",
+                           "pyprel",
+                           "scipy",
+                           "shijian"
                            ],
         entry_points     = """
             [console_scripts]

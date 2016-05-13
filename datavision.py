@@ -31,20 +31,20 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-05-13T0409Z"
+version = "2016-05-13T0753Z"
 
 import itertools
 import math
-import matplotlib.pyplot
-import numpy
 import operator
 import os
-import PIL.Image
 import random
-import scipy.stats
 import sys
 
+import matplotlib.pyplot
+import numpy
+import Pillow.Image
 import pyprel
+import scipy.stats
 import shijian
 
 class Dataset(object):
