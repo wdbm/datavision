@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-08-04T2216Z"
+version = "2016-08-04T2219Z"
 
 import itertools
 import math
@@ -765,11 +765,11 @@ def generate_frequencies_dictionary(
     return frequencies_dictionary
 
 def frequencies_list_from_symbols(
+    message        = "hello world",
     symbols        = symbols_default,
     frequency_base = 1760,
     multiplier     = 2 ** (1 / 12.0),
     sample_rate    = 48000,
-    message        = "hello world"
     ):
     frequencies_dictionary = generate_frequencies_dictionary(
         symbols        = symbols,
