@@ -4,6 +4,7 @@ from __future__ import division
 import time
 
 import datavision
+import numpy
 
 def main():
 
@@ -15,8 +16,7 @@ def main():
 
     datavision.play_message_sounds(
         message   = message,
-        save_plot = True,
-        directory = "plots"
+        save_plot = True
     )
 
     time.sleep(5)
@@ -28,8 +28,21 @@ def main():
     ))
 
     datavision.play_message_sounds(
-        message   = message,
-        directory = "plots"
+        message   = message
+    )
+
+    message = numpy.random.random((1, 15, 3)) * 255
+
+    print("message:\{message}".format(
+        message = message
+    ))
+    message = str(message).replace("\n", "")
+    print "".join(str(element) for element in set(message))
+
+    datavision.play_message_sounds(
+        message = message,
+        symbols = "".join(str(element) for element in set(message)),
+        gaussian_filter = False
     )
 
 if __name__ == "__main__":

@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-08-04T2219Z"
+version = "2016-08-04T2253Z"
 
 import itertools
 import math
@@ -750,7 +750,7 @@ def save_FFT_plot_matplotlib(
         dpi = 700
     )
 
-symbols_default = "0123456789abcdefghijklmnopqrstuvwxyz "
+symbols_default = "0123456789abcdefghijklmnopqrstuvwxyz +-*/\()[].,"
 
 def generate_frequencies_dictionary(
     symbols        = symbols_default,
@@ -798,6 +798,10 @@ def play_message_sounds(
     ):
     if type(message) is list:
         message = " ".join(str(element) for element in message)
+    elif type(message) is numpy.ndarray:
+        message = str(message).replace("\n", "")
+    elif type(message) is not str:
+        message = str(message)
     frequencies = frequencies_list_from_symbols(
         message = message
     )
