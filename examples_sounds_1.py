@@ -31,6 +31,8 @@ def main():
         message   = message
     )
 
+    time.sleep(5)
+
     message = numpy.random.random((1, 15, 3)) * 255
 
     print("message:\{message}".format(
