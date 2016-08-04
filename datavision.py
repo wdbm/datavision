@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-05-13T0753Z"
+version = "2016-08-04T2216Z"
 
 import itertools
 import math
@@ -42,10 +42,15 @@ import sys
 
 import matplotlib.pyplot
 import numpy
-import Pillow.Image
+import PIL.Image
+import pygame.mixer
+import pygame.sndarray
+import pylab
 import pyprel
+import scipy.ndimage.filters
 import scipy.stats
 import shijian
+import time
 
 class Dataset(object):
 
@@ -744,6 +749,125 @@ def save_FFT_plot_matplotlib(
         filename,
         dpi = 700
     )
+
+symbols_default = "0123456789abcdefghijklmnopqrstuvwxyz "
+
+def generate_frequencies_dictionary(
+    symbols        = symbols_default,
+    frequency_base = 1760,
+    multiplier     = 2 ** (1 / 12.0)
+    ):
+    frequency = frequency_base
+    frequencies_dictionary = {}
+    for symbol in symbols:
+        frequencies_dictionary[symbol] = frequency
+        frequency = int(frequency * multiplier)
+    return frequencies_dictionary
+
+def frequencies_list_from_symbols(
+    symbols        = symbols_default,
+    frequency_base = 1760,
+    multiplier     = 2 ** (1 / 12.0),
+    sample_rate    = 48000,
+    message        = "hello world"
+    ):
+    frequencies_dictionary = generate_frequencies_dictionary(
+        symbols        = symbols,
+        frequency_base = frequency_base,
+        multiplier     = multiplier
+    )
+    frequencies = [frequencies_dictionary[symbol] for symbol in message]
+    return frequencies
+
+def play_message_sounds(
+    message               = "hello world",
+    symbols               = symbols_default,
+    frequency_base        = 1760,
+    multiplier            = 2 ** (1 / 12.0),
+    sample_rate           = 48000,
+    gaussian_filter       = True,
+    gaussian_filter_sigma = 500,
+    save_plot             = False,
+    filename              = "plot_sounds_message.png",
+    directory             = ".",
+    overwrite             = True,
+    color                 = "black",
+    line                  = False,
+    line_style            = "-",
+    line_width            = 0.2,
+    ):
+    if type(message) is list:
+        message = " ".join(str(element) for element in message)
+    frequencies = frequencies_list_from_symbols(
+        message = message
+    )
+    sample_rate = 48000 # Hz
+    times = pylab.arange(0, len(message) * 87.2e-3, 1. / sample_rate)
+    frequency = pylab.array(
+        [frequencies[int(_time / 87.2e-3)] for _time in times]
+    )
+    if gaussian_filter:
+        frequency = scipy.ndimage.filters.gaussian_filter1d(
+            frequency,
+            gaussian_filter_sigma
+        )
+    phase_correction = pylab.add.accumulate(
+        times * pylab.concatenate((
+            pylab.zeros(1), 2 * pylab.pi * (frequency[:-1] - frequency[1:])
+        ))
+    )
+    if save_plot:
+        pylab.figure()
+        pylab.subplot(311)
+        pylab.plot(
+            times,
+            frequency,
+            line_style,
+            c         = color,
+            linewidth = line_width
+        )
+        pylab.subplot(312)
+        pylab.plot(
+            times,
+            0.5 * pylab.sin(2 * pylab.pi * frequency * times),
+            line_style,
+            c         = color,
+            linewidth = line_width
+        )
+        pylab.subplot(313)
+        pylab.plot(
+            times,
+            0.5 * pylab.sin(
+                2 * pylab.pi * frequency * times + phase_correction
+            ),
+            line_style,
+            c         = color,
+            linewidth = line_width
+        )
+        filename = shijian.propose_filename(
+            filename  = filename,
+            overwrite = overwrite
+        )
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        pylab.savefig(
+            directory + "/" + filename,
+        )
+    samples = (
+        16384 * 0.5 * pylab.sin(
+            2 * pylab.pi * frequency * times + phase_correction
+        )
+    ).astype(pylab.int16)
+    pygame.mixer.pre_init()
+    pygame.mixer.init(
+        sample_rate,
+        -16,
+        1
+    )
+    sound = pygame.sndarray.make_sound(samples)
+    channel = sound.play()
+    while channel.get_busy() == True:
+        time.sleep(0.1)
 
 def dot_product(v1, v2):
     return(sum((a * b) for a, b in zip(v1, v2)))

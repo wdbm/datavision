@@ -8,7 +8,7 @@ def main():
 
     setuptools.setup(
         name             = "datavision",
-        version          = "2016.05.13.0753",
+        version          = "2016.08.04.2216",
         description      = "Python data visualisation",
         long_description = Markdown_to_reStructuredText("README.md"),
         url              = "https://github.com/wdbm/datavision",
@@ -22,6 +22,8 @@ def main():
                            "matplotlib",
                            "numpy",
                            "Pillow",
+                           "pygame",
+                           "pylab",
                            "pyprel",
                            "scipy",
                            "shijian"
