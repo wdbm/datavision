@@ -7,7 +7,7 @@
 #                                                                              #
 # LICENCE INFORMATION                                                          #
 #                                                                              #
-# This program provides data visualisation utilities in Python.                #
+# This program provides data expression, analysis and other utilities.         #
 #                                                                              #
 # copyright (C) 2014 William Breaden Madden                                    #
 #                                                                              #
@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2016-08-04T2253Z"
+version = "2016-08-09T2319Z"
 
 import itertools
 import math
@@ -45,7 +45,6 @@ import numpy
 import PIL.Image
 import pygame.mixer
 import pygame.sndarray
-import pylab
 import pyprel
 import scipy.ndimage.filters
 import scipy.stats
@@ -806,8 +805,8 @@ def play_message_sounds(
         message = message
     )
     sample_rate = 48000 # Hz
-    times = pylab.arange(0, len(message) * 87.2e-3, 1. / sample_rate)
-    frequency = pylab.array(
+    times = numpy.arange(0, len(message) * 87.2e-3, 1. / sample_rate)
+    frequency = numpy.array(
         [frequencies[int(_time / 87.2e-3)] for _time in times]
     )
     if gaussian_filter:
@@ -815,34 +814,34 @@ def play_message_sounds(
             frequency,
             gaussian_filter_sigma
         )
-    phase_correction = pylab.add.accumulate(
-        times * pylab.concatenate((
-            pylab.zeros(1), 2 * pylab.pi * (frequency[:-1] - frequency[1:])
+    phase_correction = numpy.add.accumulate(
+        times * numpy.concatenate((
+            numpy.zeros(1), 2 * numpy.pi * (frequency[:-1] - frequency[1:])
         ))
     )
     if save_plot:
-        pylab.figure()
-        pylab.subplot(311)
-        pylab.plot(
+        matplotlib.pyplot.figure()
+        matplotlib.pyplot.subplot(311)
+        matplotlib.pyplot.plot(
             times,
             frequency,
             line_style,
             c         = color,
             linewidth = line_width
         )
-        pylab.subplot(312)
-        pylab.plot(
+        matplotlib.pyplot.subplot(312)
+        matplotlib.pyplot.plot(
             times,
-            0.5 * pylab.sin(2 * pylab.pi * frequency * times),
+            0.5 * numpy.sin(2 * numpy.pi * frequency * times),
             line_style,
             c         = color,
             linewidth = line_width
         )
-        pylab.subplot(313)
-        pylab.plot(
+        matplotlib.pyplot.subplot(313)
+        matplotlib.pyplot.plot(
             times,
-            0.5 * pylab.sin(
-                2 * pylab.pi * frequency * times + phase_correction
+            0.5 * numpy.sin(
+                2 * numpy.pi * frequency * times + phase_correction
             ),
             line_style,
             c         = color,
@@ -854,14 +853,14 @@ def play_message_sounds(
         )
         if not os.path.exists(directory):
             os.makedirs(directory)
-        pylab.savefig(
+        matplotlib.pyplot.savefig(
             directory + "/" + filename,
         )
     samples = (
-        16384 * 0.5 * pylab.sin(
-            2 * pylab.pi * frequency * times + phase_correction
+        16384 * 0.5 * numpy.sin(
+            2 * numpy.pi * frequency * times + phase_correction
         )
-    ).astype(pylab.int16)
+    ).astype(numpy.int16)
     pygame.mixer.pre_init()
     pygame.mixer.init(
         sample_rate,
