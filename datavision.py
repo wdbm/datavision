@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2017-01-19T1831Z"
+version = "2017-01-19T1921Z"
 
 import datetime
 import itertools
@@ -428,7 +428,7 @@ def save_graph_matplotlib(
         matplotlib.pyplot.axes().xaxis.set_major_formatter(time_formatter)
         matplotlib.pyplot.xticks(rotation = -90)
     # Set the background color.
-    matplotlib.pyplot.axes().set_axis_bgcolor(color_background)
+    matplotlib.pyplot.axes().set_facecolor(color_background)
 
     # Plot.
     if markers is True:
