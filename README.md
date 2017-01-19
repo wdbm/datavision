@@ -163,6 +163,10 @@ It can perform FFT:
 
 ![](images/FFT.png)
 
+It can graph time:
+
+![](images/time_1.png)
+
 # prerequisites
 
 ## Python 2 or Python 3

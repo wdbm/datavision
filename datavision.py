@@ -31,15 +31,18 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2017-01-16T1555Z"
+version = "2017-01-19T1831Z"
 
+import datetime
 import itertools
 import math
 import operator
 import os
 import random
 import sys
+import time
 
+import matplotlib.dates
 import matplotlib.pyplot
 import numpy
 import PIL.Image
@@ -49,7 +52,6 @@ import pyprel
 import scipy.ndimage.filters
 import scipy.stats
 import shijian
-import time
 
 class Dataset(object):
 
@@ -350,23 +352,34 @@ def plot_list(
             )
 
 def save_graph_matplotlib(
-    values       = None,
-    title        = None,
-    title_axis_x = None,
-    title_axis_y = None,
-    filename     = None,
-    directory    = ".",
-    overwrite    = True,
-    color        = "black",
-    LaTeX        = False,
-    markers      = True,
-    marker_size  = 1,
-    aspect       = None,
-    line         = False,
-    line_style   = "-",
-    line_width   = 0.2,
-    font_size    = 20
+    values              = None,
+    title               = None,
+    title_axis_x        = None,
+    title_axis_y        = None,
+    filename            = None,
+    directory           = ".",
+    overwrite           = True,
+    color               = "black",
+    color_background    = "white",
+    LaTeX               = False,
+    markers             = True,
+    marker_size         = 1,
+    aspect              = None,
+    line                = False,
+    line_style          = "-",
+    line_width          = 0.2,
+    font_size           = 20,
+    scientific_notation = False,
+    time_axis_x         = False
     ):
+
+    # 1D or 2D data
+    if isinstance(values[0], list):
+        x = [element[0] for element in values]
+        y = [element[1] for element in values]
+    else:
+        x = range(0, len(values))
+        y = values
 
     matplotlib.pyplot.ioff()
     if LaTeX is True:
@@ -377,7 +390,7 @@ def save_graph_matplotlib(
             filename = "graph.png"
         else:
             filename = shijian.propose_filename(
-                filename  = title.replace(" ", "_") + ".png",
+                filename  = title + ".png",
                 overwrite = overwrite
             )
     else:
@@ -386,21 +399,38 @@ def save_graph_matplotlib(
             overwrite = overwrite
         )
 
-    # Turn off scientific notation.
-    matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
-    matplotlib.pyplot.gca().get_yaxis().get_major_formatter().set_scientific(False)
-
-    y = values
-    x = range(0, len(y))
-
     figure = matplotlib.pyplot.figure()
 
+    # Set title.
     if title is not None:
         figure.suptitle(
             title,
             fontsize = font_size
         )
+    # Set axes titles.
+    if title_axis_x is not None:
+        matplotlib.pyplot.xlabel(title_axis_x, fontsize = font_size)
+    if title_axis_y is not None:
+        matplotlib.pyplot.ylabel(title_axis_y, fontsize = font_size)
+    # Set axes font size.
+    matplotlib.pyplot.xticks(fontsize = font_size)
+    matplotlib.pyplot.yticks(fontsize = font_size)
+    # Turn on or off axes scientific notation.
+    if scientific_notation is False:
+        matplotlib.pyplot.gca().get_xaxis().\
+            get_major_formatter().set_scientific(False)
+        matplotlib.pyplot.gca().get_yaxis().\
+            get_major_formatter().set_scientific(False)
+    # If specified, set axis x as time.
+    if time_axis_x:
+        x = [datetime.datetime.fromtimestamp(element) for element in x]
+        time_formatter = matplotlib.dates.DateFormatter("%Y-%m-%d")
+        matplotlib.pyplot.axes().xaxis.set_major_formatter(time_formatter)
+        matplotlib.pyplot.xticks(rotation = -90)
+    # Set the background color.
+    matplotlib.pyplot.axes().set_axis_bgcolor(color_background)
 
+    # Plot.
     if markers is True:
         matplotlib.pyplot.scatter(
             x,
@@ -414,23 +444,23 @@ def save_graph_matplotlib(
             x,
             y,
             line_style,
-            c         = color,
-            linewidth = line_width
+            c          = color,
+            linewidth  = line_width
         )
 
-    matplotlib.pyplot.xlabel(title_axis_x, fontsize = font_size)
-    matplotlib.pyplot.ylabel(title_axis_y, fontsize = font_size)
-    matplotlib.pyplot.xticks(fontsize = font_size)
-    matplotlib.pyplot.yticks(fontsize = font_size)
-
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    # Set the aspect ratio.
     if aspect is None:
         matplotlib.pyplot.axes().set_aspect(
             1 / matplotlib.pyplot.axes().get_data_ratio()
         )
     else:
         matplotlib.pyplot.axes().set_aspect(aspect)
+
+    figure.tight_layout()
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
     matplotlib.pyplot.savefig(
         directory + "/" + filename,
         dpi = 700
@@ -466,7 +496,7 @@ def save_multigraph_matplotlib(
             filename = "multigraph.png"
         else:
             filename = shijian.propose_filename(
-                filename  = title.replace(" ", "_") + ".png",
+                filename  = title + ".png",
                 overwrite = overwrite
             )
     else:
@@ -551,12 +581,12 @@ def save_multigraph_2D_matplotlib(
     directory        = ".",
     overwrite        = True,
     LaTeX            = False,
-    markers         = True,
-    marker_size     = 1,
-    line            = False,
-    line_style      = "-",
-    line_width      = 0.2,
-    font_size       = 20,
+    markers          = True,
+    marker_size      = 1,
+    line             = False,
+    line_style       = "-",
+    line_width       = 0.2,
+    font_size        = 20,
     aspect           = None,
     palette_name     = "palette21"
     ):
@@ -570,7 +600,7 @@ def save_multigraph_2D_matplotlib(
             filename = "multigraph.png"
         else:
             filename = shijian.propose_filename(
-                filename  = title.replace(" ", "_") + ".png",
+                filename  = title + ".png",
                 overwrite = overwrite
             )
     else:
@@ -1151,7 +1181,7 @@ def save_graph_all_combinations_matplotlib(
             filename = "graph_all_combinations.png"
         else:
             filename = shijian.propose_filename(
-                filename  = title.replace(" ", "_") + ".png",
+                filename  = title + ".png",
                 overwrite = overwrite
             )
     else:
@@ -1311,7 +1341,7 @@ def save_parallel_coordinates_matplotlib(
             filename = "parallel_coordinates.png"
         else:
             filename = shijian.propose_filename(
-                filename  = title.replace(" ", "_") + ".png",
+                filename  = title + ".png",
                 overwrite = overwrite
             )
     else:
@@ -1454,7 +1484,7 @@ def save_histogram_matplotlib(
             filename = "histogram.png"
         else:
             filename = shijian.propose_filename(
-                filename  = title.replace(" ", "_") + ".png",
+                filename  = title + ".png",
                 overwrite = overwrite
             )
     else:
@@ -1526,7 +1556,7 @@ def save_histogram_comparison_matplotlib(
             filename = "histogram_comparison.png"
         else:
             filename = shijian.propose_filename(
-                filename  = title.replace(" ", "_") + ".png",
+                filename  = title + ".png",
                 overwrite = overwrite
             )
     else:
