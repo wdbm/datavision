@@ -9,7 +9,7 @@ def main():
 
     setuptools.setup(
         name             = "datavision",
-        version          = "2017.01.19.1921",
+        version          = "2017.01.30.0039",
         description      = "Python data visualisation",
         long_description = long_description(),
         url              = "https://github.com/wdbm/datavision",

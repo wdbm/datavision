@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2017-01-19T1921Z"
+version = "2017-01-30T0039Z"
 
 import datetime
 import itertools
@@ -457,6 +457,7 @@ def save_graph_matplotlib(
         matplotlib.pyplot.axes().set_aspect(aspect)
 
     figure.tight_layout()
+    matplotlib.pyplot.subplots_adjust(top = 0.9)
 
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -562,6 +563,8 @@ def save_multigraph_matplotlib(
         )
     else:
         matplotlib.pyplot.axes().set_aspect(aspect)
+    figure.tight_layout()
+    matplotlib.pyplot.subplots_adjust(top = 0.9)
     matplotlib.pyplot.savefig(
         directory + "/" + filename,
         bbox_extra_artists = (legend,),
@@ -571,24 +574,25 @@ def save_multigraph_matplotlib(
     matplotlib.pyplot.close()
 
 def save_multigraph_2D_matplotlib(
-    variables_x      = None,
-    variables_y      = None,
-    variables_names  = None,
-    title            = None,
-    label_x          = "",
-    label_y          = "",
-    filename         = None,
-    directory        = ".",
-    overwrite        = True,
-    LaTeX            = False,
-    markers          = True,
-    marker_size      = 1,
-    line             = False,
-    line_style       = "-",
-    line_width       = 0.2,
-    font_size        = 20,
-    aspect           = None,
-    palette_name     = "palette21"
+    variables_x     = None,
+    variables_y     = None,
+    variables_names = None,
+    legend_off      = None,
+    title           = None,
+    label_x         = "",
+    label_y         = "",
+    filename        = None,
+    directory       = ".",
+    overwrite       = True,
+    LaTeX           = False,
+    markers         = True,
+    marker_size     = 1,
+    line            = False,
+    line_style      = "-",
+    line_width      = 0.2,
+    font_size       = 20,
+    aspect          = None,
+    palette_name    = "palette21"
     ):
 
     matplotlib.pyplot.ioff()
@@ -608,6 +612,11 @@ def save_multigraph_2D_matplotlib(
             filename  = filename,
             overwrite = overwrite
         )
+    if legend_off is None:
+        if len(variables_x) == 1:
+            legend_off = True
+        else:
+            legend_off = False
 
     # Turn off scientific notation.
     matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
@@ -652,12 +661,13 @@ def save_multigraph_2D_matplotlib(
         )
     matplotlib.pyplot.xlabel(label_x)
     matplotlib.pyplot.ylabel(label_y)
-    legend = matplotlib.pyplot.legend(
-        #loc            = "best",
-        loc            = "center left",
-        bbox_to_anchor = (1, 0.5),
-        fontsize       = 10
-    )
+    if not legend_off:
+        legend = matplotlib.pyplot.legend(
+            #loc            = "best",
+            loc            = "center left",
+            bbox_to_anchor = (1, 0.5),
+            fontsize       = 10
+        )
     if not os.path.exists(directory):
         os.makedirs(directory)
     if aspect is None:
@@ -666,12 +676,21 @@ def save_multigraph_2D_matplotlib(
         )
     else:
         matplotlib.pyplot.axes().set_aspect(aspect)
-    matplotlib.pyplot.savefig(
-        directory + "/" + filename,
-        bbox_extra_artists = (legend,),
-        bbox_inches        = "tight",
-        dpi                = 700
-    )
+    figure.tight_layout()
+    matplotlib.pyplot.subplots_adjust(top = 0.9)
+    if not legend_off:
+        matplotlib.pyplot.savefig(
+            directory + "/" + filename,
+            bbox_extra_artists = (legend,),
+            bbox_inches        = "tight",
+            dpi                = 700
+        )
+    else:
+        matplotlib.pyplot.savefig(
+            directory + "/" + filename,
+            bbox_inches        = "tight",
+            dpi                = 700
+        )
     matplotlib.pyplot.close()
 
 def generate_sine_values(
@@ -1492,6 +1511,7 @@ def save_histogram_matplotlib(
             filename  = filename,
             overwrite = overwrite
         )
+    figure = matplotlib.pyplot.figure()
     n, bins, patches = matplotlib.pyplot.hist(
         values,
         number_of_bins,
@@ -1517,6 +1537,8 @@ def save_histogram_matplotlib(
         )
     else:
         matplotlib.pyplot.axes().set_aspect(aspect)
+    figure.tight_layout()
+    matplotlib.pyplot.subplots_adjust(top = 0.9)
     matplotlib.pyplot.savefig(
         directory + "/" + filename,
         dpi = 700
@@ -1616,6 +1638,8 @@ def save_histogram_comparison_matplotlib(
     #    )
     #else:
     #    matplotlib.pyplot.axes().set_aspect(aspect)
+    figure.tight_layout()
+    matplotlib.pyplot.subplots_adjust(top = 0.9)
     matplotlib.pyplot.savefig(
         directory + "/" + filename,
         dpi = 700
