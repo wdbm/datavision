@@ -9,7 +9,7 @@ def main():
 
     setuptools.setup(
         name             = "datavision",
-        version          = "2017.01.30.0039",
+        version          = "2017.02.03.1617",
         description      = "Python data visualisation",
         long_description = long_description(),
         url              = "https://github.com/wdbm/datavision",
@@ -27,6 +27,9 @@ def main():
                            "pyprel",
                            "scipy",
                            "shijian"
+                           ],
+        scripts          = [
+                           "view_database_SQLite.py"
                            ],
         entry_points     = """
             [console_scripts]
