@@ -3,7 +3,7 @@
 """
 ################################################################################
 #                                                                              #
-# view_database_SQLite.py                                                      #
+# view_database_SQLite                                                         #
 #                                                                              #
 ################################################################################
 #                                                                              #
@@ -46,8 +46,8 @@ Options:
 
 from __future__ import division
 
-name    = "view_database_SQLite.py"
-version = "2017-02-03T1617Z"
+name    = "view_database_SQLite"
+version = "2017-02-03T1643Z"
 logo    = None
 
 import datetime
