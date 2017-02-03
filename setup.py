@@ -9,7 +9,7 @@ def main():
 
     setuptools.setup(
         name             = "datavision",
-        version          = "2017.02.03.1617",
+        version          = "2017.02.03.1625",
         description      = "Python data visualisation",
         long_description = long_description(),
         url              = "https://github.com/wdbm/datavision",
@@ -20,6 +20,7 @@ def main():
                            "datavision"
                            ],
         install_requires = [
+                           "dataset",
                            "matplotlib",
                            "numpy",
                            "Pillow",

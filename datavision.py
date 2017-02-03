@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2017.02.03.1617"
+version = "2017.02.03.1625"
 
 import datetime
 import itertools
