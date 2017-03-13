@@ -2,54 +2,10 @@
 
 Python data visualisation
 
-# quick start
+# setup
 
 ```Bash
-sudo apt-get -y install python
-sudo apt-get -y install python-matplotlib
-sudo pip install shijian
-sudo pip install pyprel
 sudo pip install datavision
-
-git clone https://github.com/wdbm/datavision.git
-cd datavision/
-python examples_1.py
-python examples_2.py
-python example_data_1.py
-```
-
-## setup
-
-### Ubuntu
-
-```Bash
-sudo apt-get -y install python
-sudo apt-get -y install python3
-sudo apt-get -y install python-matplotlib
-sudo apt-get -y install python3-matplotlib
-sudo pip install shijian
-sudo pip install pyprel
-sudo pip install datavision
-```
-
-### OS X
-
-```Bash   
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-brew install python3
-pip3 install matplotlib
-pip install shijian
-pip install pyprel
-pip install datavision
-```
-
-## run
-
-```Bash
-git clone https://github.com/wdbm/datavision.git
-cd datavision/
-python examples_1.py
-python examples_2.py
 ```
 
 # introduction
@@ -67,7 +23,7 @@ Qunti are composed of multiple zu (组, group) objects.
 
 In an update operation, one qunti is used to update another. Any zus in the updating qunti that are not in the updated qunti are appended to the updated qunti. Any zus that are in the updating qunti and the updated qunti replace the corresponding zus in the updated qunti.
 
-The following example illustrates a qunti update operation in which an ```alpha``` zus is replaced and a ```delta``` zus is appended:
+The following example illustrates a qunti update operation in which an `alpha` zus is replaced and a `delta` zus is appended:
 
 ```Python
 # example qunti update:
@@ -77,7 +33,7 @@ b = [['delta', '40'], ['alpha', '50']]
 a = [['beta', '20'], ['gamma', '30'], ['gamma', '15'], ['delta', '40'], ['alpha', '50']]
 ```
 
-The following example illustrates qunti symmetric difference, intersection and update operations. In the update operation, two old ```gamma``` zus are replaced by a single new ```gamma``` zu:
+The following example illustrates qunti symmetric difference, intersection and update operations. In the update operation, two old `gamma` zus are replaced by a single new `gamma` zu:
 
 ```Python
 # example qunti symmetric difference, intersection and update:
@@ -95,13 +51,13 @@ a = [['beta', '20'], ['delta', '40'], ['alpha', '50'], ['gamma', '25']]
 
 Datavision provides utilities for data visualisation. It can visualise matrices as colormaps:
 
-![](images/image_1.png)
-![](images/image_2.png)
-![](images/image_3.png)
+![](media/image_1.png)
+![](media/image_2.png)
+![](media/image_3.png)
 
 It can visualise histograms:
 
-![](images/histogram_comparison_1.png)
+![](media/histogram_comparison_1.png)
 
 It can visualise graphs and histograms in a terminal:
 
@@ -153,36 +109,24 @@ It can visualise graphs and histograms in a terminal:
 
 It can plot all combinations of variables:
 
-![](images/variable_correlations_1.png)
+![](media/variable_correlations_1.png)
 
 It can plot all parallel coordinates:
 
-![](images/parallel_coordinates_1.png)
+![](media/parallel_coordinates_1.png)
 
 It can perform FFT:
 
-![](images/FFT.png)
+![](media/FFT.png)
 
 It can graph time:
 
-![](images/time_1.png)
+![](media/time_1.png)
 
-# prerequisites
+# graphs
 
-## Python 2 or Python 3
-
-```Bash
-sudo apt-get -y install python
-sudo apt-get -y install python3
-```
-
-## matplotlib
-
-```Bash
-sudo apt-get -y install python-matplotlib
-sudo apt-get -y install python3-matplotlib
-```
-
-## shijian
-
-- <https://github.com/wdbm/shijian>
+![](media/graph.png)
+![](media/multigraph.png)
+![](media/multigraph_2D.png)
+![](media/multigraph_2D_date.png)
+![](media/multigraph_2D_time.png)

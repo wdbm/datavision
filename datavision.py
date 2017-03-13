@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2017.02.03.1625"
+version = "2017-03-13T1748Z"
 
 import datetime
 import itertools
@@ -370,10 +370,10 @@ def save_graph_matplotlib(
     line_width          = 0.2,
     font_size           = 20,
     scientific_notation = False,
-    time_axis_x         = False
+    time_axis_x         = False,
+    time_style          = "%Y-%m-%d", # e.g. "%Y-%m-%d", "%Y-%m-%dT%H%MZ"
     ):
 
-    # 1D or 2D data
     if isinstance(values[0], list):
         x = [element[0] for element in values]
         y = [element[1] for element in values]
@@ -403,7 +403,7 @@ def save_graph_matplotlib(
 
     # Set title.
     if title is not None:
-        figure.suptitle(
+        matplotlib.pyplot.title(
             title,
             fontsize = font_size
         )
@@ -423,15 +423,16 @@ def save_graph_matplotlib(
             get_major_formatter().set_scientific(False)
     # If specified, set axis x as time.
     if time_axis_x:
-        x = [datetime.datetime.fromtimestamp(element) for element in x]
-        time_formatter = matplotlib.dates.DateFormatter("%Y-%m-%d")
+        if type(x[0]) is not datetime.datetime:
+            x = [datetime.datetime.fromtimestamp(element) for element in x]
+        time_formatter = matplotlib.dates.DateFormatter(time_style)
         matplotlib.pyplot.axes().xaxis.set_major_formatter(time_formatter)
         matplotlib.pyplot.xticks(rotation = -90)
     # Set the background color.
     matplotlib.pyplot.axes().set_facecolor(color_background)
 
     # Plot.
-    if markers is True:
+    if markers and not line:
         matplotlib.pyplot.scatter(
             x,
             y,
@@ -439,13 +440,24 @@ def save_graph_matplotlib(
             c          = color,
             edgecolors = "none",
         )
-    if line is True:
+    if line and not markers:
         matplotlib.pyplot.plot(
             x,
             y,
             line_style,
             c          = color,
             linewidth  = line_width
+        )
+    if line and markers:
+        matplotlib.pyplot.plot(
+            x,
+            y,
+            line_style,
+            marker     = "o",
+            markersize = marker_size,
+            c          = color,
+            linewidth  = line_width,
+            label      = name,
         )
 
     # Set the aspect ratio.
@@ -469,23 +481,26 @@ def save_graph_matplotlib(
     matplotlib.pyplot.close()
 
 def save_multigraph_matplotlib(
-    variables       = None,
-    variables_names = None,
-    title           = None,
-    label_x         = "",
-    label_y         = "",
-    filename        = None,
-    directory       = ".",
-    overwrite       = True,
-    LaTeX           = False,
-    markers         = True,
-    marker_size     = 1,
-    line            = False,
-    line_style      = "-",
-    line_width      = 0.2,
-    font_size       = 20,
-    aspect          = None,
-    palette_name    = "palette21"
+    variables           = None,
+    variables_names     = None,
+    title               = None,
+    title_axis_x        = "",
+    title_axis_y        = "",
+    filename            = None,
+    directory           = ".",
+    overwrite           = True,
+    LaTeX               = False,
+    markers             = True,
+    marker_size         = 1,
+    line                = False,
+    line_style          = "-",
+    line_width          = 0.2,
+    font_size           = 20,
+    scientific_notation = False,
+    time_axis_x         = False,
+    time_style          = "%Y-%m-%d", # e.g. "%Y-%m-%d", "%Y-%m-%dT%H%MZ"
+    aspect              = None,
+    palette_name        = "palette21"
     ):
 
     matplotlib.pyplot.ioff()
@@ -506,24 +521,26 @@ def save_multigraph_matplotlib(
             overwrite = overwrite
         )
 
-    # Turn off scientific notation.
-    matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
-    matplotlib.pyplot.gca().get_yaxis().get_major_formatter().set_scientific(False)
-
     figure = matplotlib.pyplot.figure()
 
-    palette = pyprel.access_palette(
-        name = palette_name,
-        minimum_number_of_colors_needed = len(variables)
-    )
+    if palette_name:
+        palette = pyprel.access_palette(
+            name = palette_name,
+            minimum_number_of_colors_needed = len(variables)
+        )
     for values, name, color in zip(
         variables,
         variables_names,
         palette
         ):
-        y = values
-        x = range(0, len(y))
-        if markers is True:
+        if isinstance(values[0], list):
+            x = [element[0] for element in values]
+            y = [element[1] for element in values]
+        else:
+            x = range(0, len(values))
+            y = values
+
+        if markers and not line:
             matplotlib.pyplot.scatter(
                 x,
                 y,
@@ -532,7 +549,7 @@ def save_multigraph_matplotlib(
                 edgecolors = "none",
                 label      = name,
             )
-        if line is True:
+        if line and not markers:
             matplotlib.pyplot.plot(
                 x,
                 y,
@@ -541,30 +558,66 @@ def save_multigraph_matplotlib(
                 linewidth = line_width,
                 #label     = name,
             )
+        if line and markers:
+            matplotlib.pyplot.plot(
+                x,
+                y,
+                line_style,
+                marker     = "o",
+                markersize = marker_size,
+                c          = color,
+                linewidth  = line_width,
+                label      = name,
+            )
 
+    # Set title.
     if title is not None:
-        figure.suptitle(
+        matplotlib.pyplot.title(
             title,
-            fontsize = 20
+            fontsize = font_size
         )
-    matplotlib.pyplot.xlabel(label_x)
-    matplotlib.pyplot.ylabel(label_y)
-    legend = matplotlib.pyplot.legend(
-        #loc            = "best",
-        loc            = "center left",
-        bbox_to_anchor = (1, 0.5),
-        fontsize       = 10
-    )
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    # Set axes titles.
+    if title_axis_x is not None:
+        matplotlib.pyplot.xlabel(title_axis_x, fontsize = font_size)
+    if title_axis_y is not None:
+        matplotlib.pyplot.ylabel(title_axis_y, fontsize = font_size)
+    # Set axes font size.
+    matplotlib.pyplot.xticks(fontsize = font_size)
+    matplotlib.pyplot.yticks(fontsize = font_size)
+    # Turn on or off axes scientific notation.
+    if scientific_notation is False:
+        matplotlib.pyplot.gca().get_xaxis().\
+            get_major_formatter().set_scientific(False)
+        matplotlib.pyplot.gca().get_yaxis().\
+            get_major_formatter().set_scientific(False)
+    # If specified, set axis x as time.
+    if time_axis_x:
+        if type(x[0]) is not datetime.datetime:
+            x = [datetime.datetime.fromtimestamp(element) for element in x]
+        time_formatter = matplotlib.dates.DateFormatter(time_style)
+        matplotlib.pyplot.axes().xaxis.set_major_formatter(time_formatter)
+        matplotlib.pyplot.xticks(rotation = -90)
+    # Set the aspect ratio.
     if aspect is None:
         matplotlib.pyplot.axes().set_aspect(
             1 / matplotlib.pyplot.axes().get_data_ratio()
         )
     else:
         matplotlib.pyplot.axes().set_aspect(aspect)
+    # legend
+    legend = matplotlib.pyplot.legend(
+        #loc            = "best",
+        loc            = "center left",
+        bbox_to_anchor = (1, 0.5),
+        fontsize       = 10
+    )
+
     figure.tight_layout()
     matplotlib.pyplot.subplots_adjust(top = 0.9)
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
     matplotlib.pyplot.savefig(
         directory + "/" + filename,
         bbox_extra_artists = (legend,),
@@ -574,25 +627,28 @@ def save_multigraph_matplotlib(
     matplotlib.pyplot.close()
 
 def save_multigraph_2D_matplotlib(
-    variables_x     = None,
-    variables_y     = None,
-    variables_names = None,
-    legend_off      = None,
-    title           = None,
-    label_x         = "",
-    label_y         = "",
-    filename        = None,
-    directory       = ".",
-    overwrite       = True,
-    LaTeX           = False,
-    markers         = True,
-    marker_size     = 1,
-    line            = False,
-    line_style      = "-",
-    line_width      = 0.2,
-    font_size       = 20,
-    aspect          = None,
-    palette_name    = "palette21"
+    variables_x         = None,
+    variables_y         = None,
+    variables_names     = None,
+    legend_off          = None,
+    title               = None,
+    title_axis_x        = "",
+    title_axis_y        = "",
+    filename            = None,
+    directory           = ".",
+    overwrite           = True,
+    LaTeX               = False,
+    markers             = True,
+    marker_size         = 1,
+    line                = False,
+    line_style          = "-",
+    line_width          = 0.2,
+    font_size           = 20,
+    scientific_notation = False,
+    time_axis_x         = False,
+    time_style          = "%Y-%m-%d", # e.g. "%Y-%m-%d", "%Y-%m-%dT%H%MZ"
+    aspect              = None,
+    palette_name        = "palette21"
     ):
 
     matplotlib.pyplot.ioff()
@@ -618,16 +674,13 @@ def save_multigraph_2D_matplotlib(
         else:
             legend_off = False
 
-    # Turn off scientific notation.
-    matplotlib.pyplot.gca().get_xaxis().get_major_formatter().set_scientific(False)
-    matplotlib.pyplot.gca().get_yaxis().get_major_formatter().set_scientific(False)
-
     figure = matplotlib.pyplot.figure()
 
-    palette = pyprel.access_palette(
-        name = palette_name,
-        minimum_number_of_colors_needed = len(variables_x)
-    )
+    if palette_name:
+        palette = pyprel.access_palette(
+            name = palette_name,
+            minimum_number_of_colors_needed = len(variables_x)
+        )
     for values_x, values_y, name, color in zip(
         variables_x,
         variables_y,
@@ -636,7 +689,7 @@ def save_multigraph_2D_matplotlib(
         ):
         y = values_y
         x = values_x
-        if markers is True:
+        if markers and not line:
             matplotlib.pyplot.scatter(
                 x,
                 y,
@@ -645,7 +698,7 @@ def save_multigraph_2D_matplotlib(
                 edgecolors = "none",
                 label      = name,
             )
-        if line is True:
+        if line and not markers:
             matplotlib.pyplot.plot(
                 x,
                 y,
@@ -654,13 +707,53 @@ def save_multigraph_2D_matplotlib(
                 linewidth = line_width,
                 label     = name,
             )
+        if line and markers:
+            matplotlib.pyplot.plot(
+                x,
+                y,
+                line_style,
+                marker     = "o",
+                markersize = marker_size,
+                c          = color,
+                linewidth  = line_width,
+                label      = name,
+            )
+    # Set title.
     if title is not None:
-        figure.suptitle(
+        matplotlib.pyplot.title(
             title,
-            fontsize = 20
+            fontsize = font_size
         )
-    matplotlib.pyplot.xlabel(label_x)
-    matplotlib.pyplot.ylabel(label_y)
+    # Set axes titles.
+    if title_axis_x is not None:
+        matplotlib.pyplot.xlabel(title_axis_x, fontsize = font_size)
+    if title_axis_y is not None:
+        matplotlib.pyplot.ylabel(title_axis_y, fontsize = font_size)
+    # Set axes font size.
+    matplotlib.pyplot.xticks(fontsize = font_size)
+    matplotlib.pyplot.yticks(fontsize = font_size)
+    # Turn on or off axes scientific notation.
+    if scientific_notation is False:
+        if not time_axis_x:
+            matplotlib.pyplot.gca().get_xaxis().\
+                get_major_formatter().set_scientific(False)
+        matplotlib.pyplot.gca().get_yaxis().\
+            get_major_formatter().set_scientific(False)
+    # If specified, set axis x as time.
+    if time_axis_x:
+        if type(x[0]) is not datetime.datetime:
+            x = [datetime.datetime.fromtimestamp(element) for element in x]
+        time_formatter = matplotlib.dates.DateFormatter(time_style)
+        matplotlib.pyplot.axes().xaxis.set_major_formatter(time_formatter)
+        matplotlib.pyplot.xticks(rotation = -90)
+    # Set the aspect ratio.
+    if aspect is None:
+        matplotlib.pyplot.axes().set_aspect(
+            1 / matplotlib.pyplot.axes().get_data_ratio()
+        )
+    else:
+        matplotlib.pyplot.axes().set_aspect(aspect)
+    # legend
     if not legend_off:
         legend = matplotlib.pyplot.legend(
             #loc            = "best",
@@ -668,16 +761,13 @@ def save_multigraph_2D_matplotlib(
             bbox_to_anchor = (1, 0.5),
             fontsize       = 10
         )
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    if aspect is None:
-        matplotlib.pyplot.axes().set_aspect(
-            1 / matplotlib.pyplot.axes().get_data_ratio()
-        )
-    else:
-        matplotlib.pyplot.axes().set_aspect(aspect)
+
     figure.tight_layout()
     matplotlib.pyplot.subplots_adjust(top = 0.9)
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
     if not legend_off:
         matplotlib.pyplot.savefig(
             directory + "/" + filename,
