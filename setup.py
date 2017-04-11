@@ -9,7 +9,7 @@ def main():
 
     setuptools.setup(
         name             = "datavision",
-        version          = "2017.03.13.1748",
+        version          = "2017.04.11.1548",
         description      = "Python data visualisation",
         long_description = long_description(),
         url              = "https://github.com/wdbm/datavision",
@@ -30,6 +30,7 @@ def main():
                            "shijian"
                            ],
         scripts          = [
+                           "duplicates_database_SQLite.py",
                            "view_database_SQLite.py"
                            ],
         entry_points     = """
