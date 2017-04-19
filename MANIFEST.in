@@ -1,7 +1,7 @@
+include change_field_name_database_SQLite.py
+include datavision.py
+include duplicates_database_SQLite.py
 include LICENSE
 include README.md
-include images/image_1.png
-include images/image_2.png
-include images/image_3.png
 include setup.py
-include datavision.py
+include view_database_SQLite.py

@@ -8,9 +8,7 @@ Python data visualisation
 sudo pip install datavision
 ```
 
-# introduction
-
-## qunti and zus lists
+# qunti and zus lists
 
 Qunti (群体, groups) are lists that act
 
@@ -19,7 +17,7 @@ Qunti (群体, groups) are lists that act
 
 Qunti are composed of multiple zu (组, group) objects.
 
-### qunti operations
+## qunti operations
 
 In an update operation, one qunti is used to update another. Any zus in the updating qunti that are not in the updated qunti are appended to the updated qunti. Any zus that are in the updating qunti and the updated qunti replace the corresponding zus in the updated qunti.
 
@@ -47,7 +45,7 @@ b = [['delta', '40'], ['alpha', '50'], ['gamma', '25']]
 a = [['beta', '20'], ['delta', '40'], ['alpha', '50'], ['gamma', '25']]
 ```
 
-## data visualisation
+# data visualisation
 
 Datavision provides utilities for data visualisation. It can visualise matrices as colormaps:
 
@@ -123,10 +121,18 @@ It can graph time:
 
 ![](media/time_1.png)
 
-# graphs
+## graphs
 
 ![](media/graph.png)
 ![](media/multigraph.png)
 ![](media/multigraph_2D.png)
 ![](media/multigraph_2D_date.png)
 ![](media/multigraph_2D_time.png)
+
+# databases
+
+Datavision features some scripts for interacting with databases:
+
+- `change_field_name_database_SQLite.py`
+- `duplicates_database_SQLite.py`
+- `view_database_SQLite.py`
