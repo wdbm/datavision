@@ -49,13 +49,13 @@ a = [['beta', '20'], ['delta', '40'], ['alpha', '50'], ['gamma', '25']]
 
 Datavision provides utilities for data visualisation. It can visualise matrices as colormaps:
 
-![](media/image_1.png)
-![](media/image_2.png)
-![](media/image_3.png)
+![](https://raw.githubusercontent.com/wdbm/datavision/master/media/image_1.png)
+![](https://raw.githubusercontent.com/wdbm/datavision/master/media/image_2.png)
+![](https://raw.githubusercontent.com/wdbm/datavision/master/media/image_3.png)
 
 It can visualise histograms:
 
-![](media/histogram_comparison_1.png)
+![](https://raw.githubusercontent.com/wdbm/datavision/master/media/histogram_comparison_1.png)
 
 It can visualise graphs and histograms in a terminal:
 
@@ -107,27 +107,27 @@ It can visualise graphs and histograms in a terminal:
 
 It can plot all combinations of variables:
 
-![](media/variable_correlations_1.png)
+![](https://raw.githubusercontent.com/wdbm/datavision/master/media/variable_correlations_1.png)
 
 It can plot all parallel coordinates:
 
-![](media/parallel_coordinates_1.png)
+![](https://raw.githubusercontent.com/wdbm/datavision/master/media/parallel_coordinates_1.png)
 
 It can perform FFT:
 
-![](media/FFT.png)
+![](https://raw.githubusercontent.com/wdbm/datavision/master/media/FFT.png)
 
 It can graph time:
 
-![](media/time_1.png)
+![](https://raw.githubusercontent.com/wdbm/datavision/master/media/time_1.png)
 
 ## graphs
 
-![](media/graph.png)
-![](media/multigraph.png)
-![](media/multigraph_2D.png)
-![](media/multigraph_2D_date.png)
-![](media/multigraph_2D_time.png)
+![](https://raw.githubusercontent.com/wdbm/datavision/master/media/graph.png)
+![](https://raw.githubusercontent.com/wdbm/datavision/master/media/multigraph.png)
+![](https://raw.githubusercontent.com/wdbm/datavision/master/media/multigraph_2D.png)
+![](https://raw.githubusercontent.com/wdbm/datavision/master/media/multigraph_2D_date.png)
+![](https://raw.githubusercontent.com/wdbm/datavision/master/media/multigraph_2D_time.png)
 
 # databases
 
