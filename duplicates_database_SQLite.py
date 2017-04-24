@@ -52,7 +52,7 @@ import propyte
 import shijian
 
 name    = "duplicates_database_SQLite"
-version = "2017-04-11T1548Z"
+version = "2017-04-24T1630Z"
 logo    = None
 
 def access_database(
@@ -100,12 +100,13 @@ def main(options):
 
         if indices_duplicates:
             print("duplicates detected")
-            entries_out = []
-            for index, entry in enumerate(entries_in):
-                if index not in indices_duplicates:
-                    entries_out.append(entry)
         else:
             print("no duplicates detected")
+
+        entries_out = []
+        for index, entry in enumerate(entries_in):
+            if index not in indices_duplicates:
+                entries_out.append(entry)
 
         print("save entries with duplicates removed to database {filename}".format(
             filename = filename_database_out
