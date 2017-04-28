@@ -1,5 +1,6 @@
 include change_field_name_database_SQLite.py
 include datavision.py
+include datavision_TTY_plot.py
 include duplicates_database_SQLite.py
 include LICENSE
 include README.md

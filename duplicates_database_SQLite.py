@@ -32,10 +32,10 @@
 #                                                                              #
 ################################################################################
 
-Usage:
+usage:
     program [options]
 
-Options:
+options:
     -h, --help          display help message
     --version           display version and exit
 
@@ -52,7 +52,7 @@ import propyte
 import shijian
 
 name    = "duplicates_database_SQLite"
-version = "2017-04-24T1630Z"
+version = "2017-04-28T1439Z"
 logo    = None
 
 def access_database(

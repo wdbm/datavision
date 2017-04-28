@@ -82,6 +82,10 @@ It can visualise graphs and histograms in a terminal:
    │                                                                            
 ```
 
+```Bash
+echo "0,  1,  4,  9, 16, 25, 36, 49, 64, 81" | datavision_TTY_plot.py
+```
+
 ```
                          │                        
                          ┼+75503.2                

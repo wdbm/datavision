@@ -9,7 +9,7 @@ def main():
 
     setuptools.setup(
         name             = "datavision",
-        version          = "2017.04.28.0538",
+        version          = "2017.04.28.1439",
         description      = "Python data visualisation",
         long_description = long_description(),
         url              = "https://github.com/wdbm/datavision",
@@ -31,6 +31,7 @@ def main():
                            ],
         scripts          = [
                            "change_field_name_database_SQLite.py",
+                           "datavision_TTY_plot.py",
                            "duplicates_database_SQLite.py",
                            "view_database_SQLite.py"
                            ],
