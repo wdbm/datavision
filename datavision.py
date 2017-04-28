@@ -31,7 +31,7 @@
 from __future__ import division
 
 name    = "datavision"
-version = "2017-04-24T1630Z"
+version = "2017-04-28T0538Z"
 
 import datetime
 import itertools
@@ -1644,15 +1644,23 @@ def save_histogram_comparison_matplotlib(
     normalize      = True,
     label_x        = "",
     label_y        = None,
-    label_ratio_x  = "frequency",
+    label_ratio_x  = None,
     label_ratio_y  = "ratio",
-    title          = None,
+    title          = "comparison",
     label_1        = "1",
     label_2        = "2",
     overwrite      = True,
     LaTeX          = False,
     #aspect         = None,
-    font_size      = 20
+    font_size      = 20,
+    color_1        = "#3861AA",
+    color_2        = "#AA4B38",
+    color_3        = "#38AA84",
+    color_edge_1   = "#0000FF",
+    color_edge_2   = "#AA4B38",
+    color_edge_3   = "#38AA84",
+    alpha          = 0.7,
+    width_line     = 1
     ):
 
     matplotlib.pyplot.ioff()
@@ -1688,29 +1696,32 @@ def save_histogram_comparison_matplotlib(
     ns, bins, patches = axis_1.hist(
         values,
         color     = [
-                        (  0 / 255,  85 / 255, 160 / 255), # #3861AA
-                        (  0 / 255, 255 / 255,   0 / 255)  # #00FF00
+                        color_1,
+                        color_2
                     ],
         normed    = normalize,
         histtype  = "stepfilled",
         bins      = number_of_bins,
-        alpha     = 0.5,
+        alpha     = alpha,
         label     = [label_1, label_2],
         rwidth    = bar_width,
-        linewidth = 0
+        linewidth = width_line
     )
+    matplotlib.pyplot.setp(patches[0], edgecolor = color_edge_1)
+    matplotlib.pyplot.setp(patches[1], edgecolor = color_edge_2)
     axis_1.legend(
         loc = "best"
     )
     bars = axis_2.bar(
         bins[:-1],
         ns[0] / ns[1],
-        alpha     = 0.5,
-        linewidth = 0,
-        width     = bins[1] - bins[0]
+        alpha     = 1,
+        linewidth = 0, #width_line,
+        width     = bins[1] - bins[0],
     )
     for bar in bars:
-        bar.set_color("#00B9BC")
+        bar.set_color(color_3)
+        bar.set_edgecolor(color_edge_3)
     axis_1.set_xlabel(label_x, fontsize = font_size)
     axis_1.set_ylabel(label_y, fontsize = font_size)
     axis_2.set_xlabel(label_ratio_x, fontsize = font_size)
@@ -1732,7 +1743,7 @@ def save_histogram_comparison_matplotlib(
     matplotlib.pyplot.subplots_adjust(top = 0.9)
     matplotlib.pyplot.savefig(
         directory + "/" + filename,
-        dpi = 700
+        dpi = 900
     )
     matplotlib.pyplot.close()
 
@@ -2871,3 +2882,15 @@ def difference_RMS_images(
     except:
         RMS = None
     return RMS
+
+def NumPy_array_pad_square_shape(
+    array     = None,
+    pad_value = 0
+    ):
+
+    width_padded = int(math.ceil(math.sqrt(len(array))))
+    padding      = (width_padded ** 2 - len(array)) * [pad_value]
+    array        = numpy.append(array, padding)
+    array        = array.reshape(width_padded, width_padded)
+
+    return array

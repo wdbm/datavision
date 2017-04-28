@@ -37,7 +37,7 @@ def main():
         label_1       = "a",
         label_2       = "b",
         normalize     = True,
-        label_ratio_x = "frequency",
+        label_ratio_x = "measurement",
         label_y       = "",
         title         = "comparison of a and b",
         filename      = filename
