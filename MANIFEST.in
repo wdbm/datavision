@@ -4,5 +4,6 @@ include datavision_TTY_plot.py
 include duplicates_database_SQLite.py
 include LICENSE
 include README.md
+include search_database_SQLite.py
 include setup.py
 include view_database_SQLite.py

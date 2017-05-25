@@ -33,6 +33,7 @@ def main():
                            "change_field_name_database_SQLite.py",
                            "datavision_TTY_plot.py",
                            "duplicates_database_SQLite.py",
+                           "search_database_SQLite.py",
                            "view_database_SQLite.py"
                            ],
         entry_points     = """
