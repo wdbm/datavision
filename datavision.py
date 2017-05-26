@@ -28,12 +28,10 @@
 # <http://www.gnu.org/licenses/>.                                              #
 #                                                                              #
 ################################################################################
+
 from __future__ import division
-
-name    = "datavision"
-version = "2017-04-28T1439Z"
-
 import datetime
+import dateutil
 import itertools
 import math
 import operator
@@ -42,6 +40,7 @@ import random
 import sys
 import time
 
+import dataset
 import matplotlib.dates
 import matplotlib.pyplot
 import numpy
@@ -52,6 +51,55 @@ import pyprel
 import scipy.ndimage.filters
 import scipy.stats
 import shijian
+
+name    = "datavision"
+version = "2017-05-26T1740Z"
+
+def access_database_SQLite(
+    filename = "database.db"
+    ):
+
+    database = dataset.connect("sqlite:///" + str(filename))
+    return database
+
+def search_database_SQLite(
+    filename    = "Twitter.db",
+    search_text = "Bitcoin",
+    ):
+
+    database_in = access_database_SQLite(filename = filename)
+
+    results = []
+    for name_table in database_in.tables:
+        table      = database_in[name_table]
+        entries_in = [entry for entry in table.all()]
+        for entry in entries_in:
+            for key in entry:
+                if search_text in str(key) or search_text in str(entry[key]):
+                    results.append(entry)
+
+    return results
+
+def search_database_SQLite_within_time(
+    filename    = "Twitter.db",
+    search_text = "Bitcoin",
+    time_field  = "time_UNIX",
+    within_time = 86400 # seconds
+    ):
+
+    results_search_text = search_database_SQLite(
+        filename    = filename,
+        search_text = search_text
+    )
+
+    results = []
+    if results_search_text:
+        limit = datetime.datetime.utcnow() - dateutil.relativedelta.relativedelta(seconds = within_time)
+        for entry in results_search_text:
+            if datetime.datetime.utcfromtimestamp(float(entry[time_field]) / 100) >= limit:
+                results.append(entry)
+
+    return results
 
 class Dataset(object):
 

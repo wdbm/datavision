@@ -9,7 +9,7 @@ def main():
 
     setuptools.setup(
         name             = "datavision",
-        version          = "2017.04.28.1439",
+        version          = "2017.05.26.1740",
         description      = "Python data visualisation",
         long_description = long_description(),
         url              = "https://github.com/wdbm/datavision",
@@ -20,6 +20,7 @@ def main():
                            "datavision"
                            ],
         install_requires = [
+                           "python-dateutil",
                            "dataset",
                            "matplotlib",
                            "numpy",

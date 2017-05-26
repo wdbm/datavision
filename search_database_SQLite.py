@@ -51,7 +51,7 @@ import pyprel
 import shijian
 
 name    = "search_database_SQLite"
-version = "2017-05-25T1609Z"
+version = "2017-05-26T1714Z"
 logo    = None
 
 def access_database(
@@ -85,7 +85,7 @@ def main(options):
                 if search_text in str(key) or search_text in str(entry[key]):
                     print("\nmatch found -- table {table} entry {ID}".format(
                         table = name_table,
-                        ID = entry["id"]
+                        ID    = entry["id"]
                     ))
                     pyprel.print_dictionary(dictionary = entry)
 
