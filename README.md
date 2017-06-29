@@ -5,7 +5,7 @@ Python data visualisation
 # setup
 
 ```Bash
-sudo pip install datavision
+pip install datavision
 ```
 
 # qunti and zus lists
