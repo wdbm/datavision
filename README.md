@@ -47,17 +47,19 @@ a = [['beta', '20'], ['delta', '40'], ['alpha', '50'], ['gamma', '25']]
 
 # data visualisation
 
-Datavision provides utilities for data visualisation. It can visualise matrices as colormaps:
+Datavision provides utilities for data visualisation.
+
+## matrices as colormaps
 
 ![](https://raw.githubusercontent.com/wdbm/datavision/master/media/image_1.png)
 ![](https://raw.githubusercontent.com/wdbm/datavision/master/media/image_2.png)
 ![](https://raw.githubusercontent.com/wdbm/datavision/master/media/image_3.png)
 
-It can visualise histograms:
+## histograms
 
 ![](https://raw.githubusercontent.com/wdbm/datavision/master/media/histogram_comparison_1.png)
 
-It can visualise graphs and histograms in a terminal:
+## terminal graphs and histograms
 
 ```
    │                                                                            
@@ -80,10 +82,6 @@ It can visualise graphs and histograms in a terminal:
    ┼-48.228                                                                     
    │                                                                        ◽   
    │                                                                            
-```
-
-```Bash
-echo "0,  1,  4,  9, 16, 25, 36, 49, 64, 81" | datavision_TTY_plot.py
 ```
 
 ```
@@ -109,23 +107,27 @@ echo "0,  1,  4,  9, 16, 25, 36, 49, 64, 81" | datavision_TTY_plot.py
    -4.69099              │              +4.6147   
 ```
 
-It can plot all combinations of variables:
+```Bash
+echo "0,  1,  4,  9, 16, 25, 36, 49, 64, 81" | datavision_TTY_plot.py
+```
+
+## combinations of variables
 
 ![](https://raw.githubusercontent.com/wdbm/datavision/master/media/variable_correlations_1.png)
 
-It can plot all parallel coordinates:
+## parallel coordinates
 
 ![](https://raw.githubusercontent.com/wdbm/datavision/master/media/parallel_coordinates_1.png)
 
-It can perform FFT:
+## FFT
 
 ![](https://raw.githubusercontent.com/wdbm/datavision/master/media/FFT.png)
 
-It can graph time:
+## time graphs
 
 ![](https://raw.githubusercontent.com/wdbm/datavision/master/media/time_1.png)
 
-It can make Bollinger bands plots:
+## Bollinger bands
 
 ![](https://raw.githubusercontent.com/wdbm/datavision/master/media/Bollinger_bands_1.png)
 
