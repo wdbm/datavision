@@ -125,6 +125,12 @@ It can graph time:
 
 ![](https://raw.githubusercontent.com/wdbm/datavision/master/media/time_1.png)
 
+It can make Bollinger bands plots:
+
+![](https://raw.githubusercontent.com/wdbm/datavision/master/media/Bollinger_bands_1.png)
+
+![](https://raw.githubusercontent.com/wdbm/datavision/master/media/Bollinger_bands_2.png)
+
 ## graphs
 
 ![](https://raw.githubusercontent.com/wdbm/datavision/master/media/graph.png)

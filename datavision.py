@@ -45,6 +45,7 @@ import matplotlib.dates
 import matplotlib.pyplot
 import numpy
 import PIL.Image
+import pandas.stats.moments
 import pygame.mixer
 import pygame.sndarray
 import pyprel
@@ -53,7 +54,7 @@ import scipy.stats
 import shijian
 
 name    = "datavision"
-version = "2017-05-26T1740Z"
+version = "2017-06-29T1521Z"
 
 def access_database_SQLite(
     filename = "database.db"
@@ -815,6 +816,112 @@ def save_multigraph_2D_matplotlib(
 
     if not os.path.exists(directory):
         os.makedirs(directory)
+
+    if not legend_off:
+        matplotlib.pyplot.savefig(
+            directory + "/" + filename,
+            bbox_extra_artists = (legend,),
+            bbox_inches        = "tight",
+            dpi                = 700
+        )
+    else:
+        matplotlib.pyplot.savefig(
+            directory + "/" + filename,
+            bbox_inches        = "tight",
+            dpi                = 700
+        )
+    matplotlib.pyplot.close()
+
+def save_plot_Bollinger_bands(
+    x                   = None,
+    y                   = None,
+    window              = 20,
+    title               = "Bollinger bands",
+    title_axis_x        = "time",
+    title_axis_y        = "price",
+    time_style          = "%Y-%m-%d", # e.g. "%Y-%m-%d", "%Y-%m-%dT%H%MZ",
+    line_width          = 0.4,
+    font_size           = 10,
+    scientific_notation = False,
+    time_axis_x         = False,
+    aspect              = None,
+    color_background    = "#ffffff",
+    LaTeX               = False,
+    legend_off          = True,
+    filename            = None,
+    directory           = ".",
+    ):
+
+    matplotlib.pyplot.ioff()
+    if LaTeX is True:
+        matplotlib.pyplot.rc("text", usetex = True)
+        matplotlib.pyplot.rc("font", family = "serif")
+
+    if time_axis_x:
+        if type(x[0]) is not datetime.datetime:
+            x = numpy.vectorize(lambda timestamp: datetime.datetime.fromtimestamp(timestamp))(x)
+
+    rolling_mean               = pandas.stats.moments.rolling_mean(y, window)
+    rolling_standard_deviation = pandas.stats.moments.rolling_std(y, window)
+    upper_bound                = rolling_mean + (rolling_standard_deviation * 2)
+    lower_bound                = rolling_mean - (rolling_standard_deviation * 2)
+
+    matplotlib.pyplot.plot(x[window:], rolling_mean[window:], label = "middle band", linewidth = line_width, color = "#0000ff", alpha = 1)
+    matplotlib.pyplot.plot(x[window:], upper_bound[window:],  label = "upper band",  linewidth = line_width, color = "#ff0000", alpha = 1)
+    matplotlib.pyplot.plot(x[window:], lower_bound[window:],  label = "lower band",  linewidth = line_width, color = "#00ff00", alpha = 1)
+    matplotlib.pyplot.fill_between(x, lower_bound, upper_bound, facecolor = "grey", alpha = 0.1)
+
+    matplotlib.pyplot.plot(x[window:], y[window:], label = "plot", linewidth = line_width, color = "black")
+    matplotlib.pyplot.xlim(x[window + 1], x[-1])
+
+    # Set title.
+    if title is not None:
+        matplotlib.pyplot.title(
+            title,
+            fontsize = font_size
+        )
+    # Set axes titles.
+    if title_axis_x is not None:
+        matplotlib.pyplot.xlabel(title_axis_x, fontsize = font_size)
+    if title_axis_y is not None:
+        matplotlib.pyplot.ylabel(title_axis_y, fontsize = font_size)
+    # Set axes font size.
+    matplotlib.pyplot.xticks(fontsize = font_size)
+    matplotlib.pyplot.yticks(fontsize = font_size)
+    ## Turn on or off axes scientific notation.
+    #if scientific_notation is False:
+    #    matplotlib.pyplot.gca().get_xaxis().\
+    #        get_major_formatter().set_scientific(False)
+    #    matplotlib.pyplot.gca().get_yaxis().\
+    #        get_major_formatter().set_scientific(False)
+    # If specified, set axis x as time.
+    if time_axis_x:
+        time_formatter = matplotlib.dates.DateFormatter(time_style)
+        matplotlib.pyplot.axes().xaxis.set_major_formatter(time_formatter)
+        matplotlib.pyplot.xticks(rotation = -90)
+    # Set the background color.
+    matplotlib.pyplot.axes().set_facecolor(color_background)
+    # Set the aspect ratio.
+    if aspect is None:
+        matplotlib.pyplot.axes().set_aspect(
+            1 / matplotlib.pyplot.axes().get_data_ratio()
+        )
+    else:
+        matplotlib.pyplot.axes().set_aspect(aspect)
+
+    if not legend_off:
+        legend = matplotlib.pyplot.legend(
+            #loc            = "best",
+            loc            = "center left",
+            bbox_to_anchor = (1, 0.5),
+            fontsize       = 10
+        )
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    if filename is None:
+        filename = "Bollinger_bands.png"
 
     if not legend_off:
         matplotlib.pyplot.savefig(
