@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+"""
 ################################################################################
 #                                                                              #
 # datavision                                                                   #
@@ -28,10 +30,12 @@
 # <http://www.gnu.org/licenses/>.                                              #
 #                                                                              #
 ################################################################################
+"""
 
 from __future__ import division
 import datetime
 import dateutil
+from functools import reduce
 import itertools
 import math
 import operator
@@ -54,7 +58,7 @@ import scipy.stats
 import shijian
 
 name    = "datavision"
-version = "2017-06-29T1521Z"
+version = "2018-01-08T2025Z"
 
 def access_database_SQLite(
     filename = "database.db"
@@ -69,7 +73,6 @@ def search_database_SQLite(
     ):
 
     database_in = access_database_SQLite(filename = filename)
-
     results = []
     for name_table in database_in.tables:
         table      = database_in[name_table]
@@ -78,7 +81,6 @@ def search_database_SQLite(
             for key in entry:
                 if search_text in str(key) or search_text in str(entry[key]):
                     results.append(entry)
-
     return results
 
 def search_database_SQLite_within_time(
@@ -92,14 +94,12 @@ def search_database_SQLite_within_time(
         filename    = filename,
         search_text = search_text
     )
-
     results = []
     if results_search_text:
         limit = datetime.datetime.utcnow() - dateutil.relativedelta.relativedelta(seconds = within_time)
         for entry in results_search_text:
             if datetime.datetime.utcfromtimestamp(float(entry[time_field]) / 100) >= limit:
                 results.append(entry)
-
     return results
 
 class Dataset(object):
@@ -112,14 +112,14 @@ class Dataset(object):
 
     def index(
         number = None
-    ):
+        ):
         if number is not None:
             self._index = number
         return self._index
 
     def indices(
         self
-    ):
+        ):
         return [index for index in self._data]
 
     def variable(
@@ -127,7 +127,7 @@ class Dataset(object):
         index = None,
         name  = None,
         value = None
-    ):
+        ):
         if index is not None:
             self._index = index
         if name is not None:
@@ -142,20 +142,20 @@ class Dataset(object):
     def variables(
         self,
         index = 0
-    ):
+        ):
         return sorted([
-            variable for variable, value in self._data[self._index].iteritems()
+            variable for variable, value in list(self._data[self._index].items())
         ])
 
     def values(
         self,
         name = None
-    ):
+        ):
         return [self._data[index][name] for index in self.indices()]
 
     def table(
         self
-    ):
+        ):
         table_contents = ["index"]
         table_contents.extend(self.variables())
         table_contents = [table_contents]
@@ -176,7 +176,7 @@ class Dataset(object):
         self,
         name      = None,
         summation = None
-    ):
+        ):
         values_raw = self.values(name = name)
         values_normalized = normalize(
             values_raw,
@@ -191,14 +191,14 @@ class Dataset(object):
 
     def normalize_all(
         self
-    ):
+        ):
         for name in self.variables():
             self.normalize(name = name)
 
     def preprocess(
         self,
         name = None
-    ):
+        ):
         from sklearn import preprocessing
         values_raw = self.values(name = name)
         values_preprocessed = list(preprocessing.scale(values_raw))
@@ -212,7 +212,7 @@ class Dataset(object):
     def preprocess_all(
         self,
         skip_variables = ["class"]
-    ):
+        ):
         for name in self.variables():
             if name not in skip_variables:
                 self.preprocess(name = name)
@@ -221,7 +221,7 @@ class Dataset(object):
         self,
         name = None,
         seed = 100
-    ):
+        ):
         random.seed(seed)
         values = self.values(name = name)
         random.shuffle(values)
@@ -235,7 +235,7 @@ class Dataset(object):
     def shuffle_all(
         self,
         seed = 100
-    ):
+        ):
         for name in self.variables():
             self.shuffle(
                 name = name,
@@ -245,7 +245,7 @@ class Dataset(object):
     def add(
         self,
         dataset = None
-    ):
+        ):
         index_current_maximum = max(self.indices())
         for index_offset, index in enumerate(dataset.indices()):
             for name in dataset.variables():
@@ -302,7 +302,10 @@ class Matrix(list):
         # show or draw plot
         self._plot_shown         = False
 
-    def plot(self):
+    def plot(
+        self
+        ):
+
         # display or redraw plot
         if self._plot_shown:
             matplotlib.pyplot.figure(str(self._plot_number))
@@ -330,6 +333,7 @@ class Matrix(list):
         filename  = None,
         overwrite = False
         ):
+
         matplotlib.pyplot.figure(str(self._plot_number))
         filename_proposed = shijian.propose_filename(
             filename  = filename,
@@ -340,7 +344,10 @@ class Matrix(list):
             dpi = 700
         )
 
-    def close_plot(self):
+    def close_plot(
+        self
+        ):
+
         matplotlib.pyplot.figure(str(self._plot_number))
         matplotlib.pyplot.close()
         self._plot_shown = False
@@ -356,6 +363,7 @@ def plot_list(
     return_plot = False,
     save        = False
     ):
+
     if not plot_number:
         plot_number = shijian.unique_number()
     if style == "colormap":
@@ -427,7 +435,7 @@ def save_graph_matplotlib(
         x = [element[0] for element in values]
         y = [element[1] for element in values]
     else:
-        x = range(0, len(values))
+        x = list(range(0, len(values)))
         y = values
 
     matplotlib.pyplot.ioff()
@@ -586,7 +594,7 @@ def save_multigraph_matplotlib(
             x = [element[0] for element in values]
             y = [element[1] for element in values]
         else:
-            x = range(0, len(values))
+            x = list(range(0, len(values)))
             y = values
 
         if markers and not line:
@@ -943,6 +951,7 @@ def generate_sine_values(
     sample_rate = 16000,
     time        = 10
     ):
+
     sampling_interval = time / sample_rate
     values_time       = numpy.arange(0, time, sampling_interval)
     values_amplitude  = numpy.sin(2 * numpy.pi * frequency * values_time)
@@ -953,6 +962,7 @@ def generate_composite_sine_values(
     sample_rate = 16000,
     time        = 10
     ):
+
     values_amplitude_list = []
     for frequency in frequencies:
         values_amplitude, values_time = generate_sine_values(
@@ -983,11 +993,11 @@ def greatest_frequency_contributions_FFT(
     # two sides frequency range
     frequencies       = values_indices / time
     # one side frequency range
-    frequencies       = frequencies[range(int(signal_length / 2))] 
+    frequencies       = frequencies[list(range(int(signal_length / 2)))]
     # FFT
     weightings        = numpy.fft.fft(values_amplitude) / signal_length
     # normalization
-    weightings        = weightings[range(int(signal_length / 2))]
+    weightings        = weightings[list(range(int(signal_length / 2)))]
 
     weightings_absolute = [abs(weighting) for weighting in list(weightings)]
 
@@ -1022,11 +1032,11 @@ def save_FFT_plot_matplotlib(
     # two sides frequency range
     frequencies       = values_indices / time
     # one side frequency range
-    frequencies       = frequencies[range(int(signal_length / 2))] 
+    frequencies       = frequencies[list(range(int(signal_length / 2)))]
     # FFT
     weightings        = numpy.fft.fft(values_amplitude) / signal_length
     # normalization
-    weightings        = weightings[range(int(signal_length / 2))]
+    weightings        = weightings[list(range(int(signal_length / 2)))]
 
     figure, axes      = matplotlib.pyplot.subplots(2, 1)
     # plot amplitude versus time
@@ -1198,10 +1208,12 @@ def normalize_to_range(
     minimum = 0.0,
     maximum = 1.0
     ):
+
     """
     This function normalizes values of a list to a specified range and returns
     the original object if the values are not of the types integer or float.
     """
+
     normalized_values = []
     minimum_value = min(values)
     maximum_value = max(values)
@@ -1251,6 +1263,7 @@ def interquartile_range(
 def list_element_combinations_variadic(
     elements_specification
     ):
+
     """
     This function accepts a specification of lists of elements for each place in
     lists in the form of a list, the elements of which are lists of possible
@@ -1275,6 +1288,7 @@ def list_element_combinations_variadic(
     [20, 40, 50]
     [20, 40, 60]
     """
+
     lists = [list(list_generated) for index, element_specification in enumerate(elements_specification) for list_generated in itertools.product(*elements_specification[:index + 1])]
     return lists
 
@@ -1283,6 +1297,7 @@ def correlation_linear(
     values_2,
     printout = None
     ):
+
     """
     This function calculates the Pearson product-moment correlation coefficient.
     This is a measure of the linear collelation of two variables. The value can
@@ -1293,6 +1308,7 @@ def correlation_linear(
     This function also calculates the significance (2-tailed p-value) of the
     correlation coefficient given the sample size.
     """
+
     r, p_value = scipy.stats.pearsonr(values_1, values_2)
     if printout is not True:
         return r, p_value
@@ -1386,6 +1402,7 @@ def propose_number_of_bins(
     values,
     binning_logic_system = None,
     ):
+
     """
     This function returns a proposal for binning for a histogram of a specified
     list using an optional specified binning logic system.
@@ -1397,6 +1414,7 @@ def propose_number_of_bins(
                        the values divided by the cube root of the size of the
                        data
     """
+
     # Set the default binning logic system.
     if binning_logic_system is None:
         binning_logic_system = "Scott"
@@ -1616,7 +1634,7 @@ def save_parallel_coordinates_matplotlib(
 
     dimensions = len(datasets[0])
     if labels_ticks_x_axis is None:
-        labels_ticks_x_axis = range(dimensions)
+        labels_ticks_x_axis = list(range(dimensions))
     figure, axes        = matplotlib.pyplot.subplots(
         1,
         dimensions - 1,
@@ -1677,7 +1695,7 @@ def save_parallel_coordinates_matplotlib(
         labels_ticks = [
             "{value:4.2f}".format(
                 value = (value_minimum_tick + index_tick * step_ticks)
-            ) for index_tick in xrange(number_of_ticks)
+            ) for index_tick in list(range(number_of_ticks))
         ]
         axes_most.set_yticklabels(labels_ticks)
 
@@ -1693,7 +1711,7 @@ def save_parallel_coordinates_matplotlib(
     labels_ticks = [
         "{value:4.2f}".format(
             value = (value_minimum_tick + index_tick * step_ticks)
-        ) for index_tick in xrange(number_of_ticks)
+        ) for index_tick in list(range(number_of_ticks))
     ]
     axes_last.set_yticklabels(labels_ticks)
 
@@ -2010,9 +2028,11 @@ class TTYFigureData(object):
             self.marker = marker
 
     def extent(self):
+
         """
         return range of 2D data
         """
+
         return [min(self.x), max(self.x), min(self.y), max(self.y)]
 
     def __repr__(self):
@@ -2086,7 +2106,7 @@ class TTYFigure(object):
         )
         if zero_x >= self.canvas.x_size:
             zero_x = self.canvas.x_size - 1
-        for y in xrange(self.canvas.y_size):
+        for y in list(range(self.canvas.y_size)):
             self.out_buffer[zero_x][y] = self.y_axis_symbol
 
         zero_y = self.get_coordinates(
@@ -2096,7 +2116,7 @@ class TTYFigure(object):
             limits = [1, self.canvas.y_size])
         if zero_y >= self.canvas.y_size:
             zero_y = self.canvas.y_size - 1
-        for x in xrange(self.canvas.x_size):
+        for x in list(range(self.canvas.x_size)):
             self.out_buffer[x][zero_y] = self.x_axis_symbol # u"\u23bc"
 
         self.out_buffer[zero_x][zero_y] = self.tick_symbols # "+"
@@ -2106,9 +2126,11 @@ class TTYFigure(object):
         slope,
         default_symbol
         ):
+
         """
         return line oriented approximatively along the slope value
         """
+
         if slope > math.tan(3 * math.pi / 8):
             draw_symbol = "|"
         elif math.tan(math.pi / 8) < slope < math.tan(3 * math.pi / 8):
@@ -2312,7 +2334,7 @@ class TTYFigure(object):
         xy.sort(key = lambda c: c[0])
         previous_p = xy[0]
         e_xy = enumerate(xy)
-        e_xy.next()
+        next(e_xy)
         for i, (xi, yi) in e_xy:
             line = self._plot_line(previous_p, (xi, yi), data)
             previous_p = (xi, yi)
@@ -2422,7 +2444,7 @@ class TTYFigure(object):
 
         if y_values is None:
             y_values = x_values[:]
-            x_values = range(len(y_values))
+            x_values = list(range(len(y_values)))
 
         figure_data = TTYFigureData(
             x_values,
@@ -2469,6 +2491,7 @@ class TTYCanvas(object):
         limit_x = None, # x-axis limits (tuple of two floats)
         limit_y = None  # y axis limits (tuple of two floats)
         ):
+
         self.shape         = shape or (50, 20)
         self.margins       = margins or (0.05, 0.1)
         self._limit_x      = limit_x or [0, 1]
@@ -2478,30 +2501,38 @@ class TTYCanvas(object):
 
     @property
     def x_size(self):
+
         """
         return the width
         """
+
         return self.shape[0]
 
     @property
     def y_size(self):
+
         """
         return the height
         """
+
         return self.shape[1]
 
     @property
     def margin_x(self):
+
         """
         return x margin
         """
+
         return self.margins[0]
 
     @property
     def margin_y(self):
+
         """
         return y margin
         """
+
         return self.margins[1]
 
     def limit_x(
@@ -2509,12 +2540,14 @@ class TTYCanvas(object):
         limit_lower = None, # float
         limit_upper = None  # float
         ):
+
         """
         get or set x limits of the current axes
 
         x_min, x_max = limit_x() # return the current limit_x
         limit_x(x_min, x_max)    # set the limit_x to x_min, x_max
         """
+
         if limit_lower is None and limit_upper is None:
             return self._limit_x
         elif hasattr(limit_lower, "__iter__"):
@@ -2531,12 +2564,14 @@ class TTYCanvas(object):
         limit_lower = None,
         limit_upper = None
         ):
+
         """
         get or set y limits of the current axes
 
         y_min, y_max = limit_x() # return the current limit_y
         limit_y(y_min, y_max)    # set the limit_y to y_min, y_max
         """
+
         if limit_lower is None and limit_upper is None:
             return self._limit_y
         elif hasattr(limit_lower, "__iter__"):
@@ -2550,30 +2585,38 @@ class TTYCanvas(object):
 
     @property
     def min_x(self):
+
         """
         return x lower limit
         """
+
         return self._limit_x[0]
 
     @property
     def max_x(self):
+
         """
         return x upper limit
         """
+
         return self._limit_x[1]
 
     @property
     def min_y(self):
+
         """
         return y lower limit
         """
+
         return self._limit_y[0]
 
     @property
     def max_y(self):
+
         """
         return y upper limit
         """
+
         return self._limit_y[1]
 
     @property
@@ -2657,9 +2700,11 @@ class TTYCanvas(object):
         x,
         y
         ):
+
         """
         return Boolean to check if coördinate (x, y) is in the data box
         """
+
         return (self.min_x <= x < self.max_x) and (self.min_y <= y < self.max_y)
 
     def _clip_line(
@@ -2667,9 +2712,11 @@ class TTYCanvas(object):
         line_pt_1,
         line_pt_2
         ):
+
         """
         clip line to canvas
         """
+
         x_min = min(line_pt_1[0], line_pt_2[0])
         x_max = max(line_pt_1[0], line_pt_2[0])
         y_min = min(line_pt_1[1], line_pt_2[1])
@@ -2751,9 +2798,11 @@ def plot(
     ))
 
 def steppify(x, y):
+
     """
     Steppify a curve (x, y). This is useful for filling histograms manually.
     """
+
     dx = 0.5 * (x[1:] + x[:-1])
     xx = numpy.zeros(2 * len(dx), dtype=float)
     yy = numpy.zeros(2 * len(y), dtype=float)
@@ -2767,9 +2816,11 @@ def steppify(x, y):
     return xx, yy
 
 def stemify(x, y):
+
     """
     Stemify a curve (x, y). This is useful for filling histograms manually.
     """
+
     xx = numpy.zeros(3 * len(x), dtype=float)
     yy = numpy.zeros(3 * len(y), dtype=float)
     xx[0::3], xx[1::3], xx[2::3] = x, x, x
@@ -2860,7 +2911,6 @@ def step(
         limit_x     = limit_x,
         limit_y     = limit_y
     )
-
 
 def stem(
     x,
@@ -2987,24 +3037,26 @@ def show_image(
 
     string = ""
     if not _color:
-        for h in xrange(height):
-            for w in xrange(width):
+        for h in list(range(height)):
+            for w in list(range(width)):
                 string += color[int(_image[w, h] * (number_of_colors - 1))]
             string += "\n"
     else:
-        for h in xrange(height):
-            for w in xrange(width):
+        for h in list(range(height)):
+            for w in list(range(width)):
                 string += color[int(sum(_image[w, h]) * (number_of_colors - 1))]
             string += "\n"
     print(string)
 
 def sign(x):
+
     """
     sign of number
     - -1 : negative sign
     - 0:   null
     - 1:   positive
     """
+
     if x > 0:
         return 1
     elif x == 0:
@@ -3013,15 +3065,19 @@ def sign(x):
         return -1
 
 def transpose(matrix):
+
     """
     transpose 2D matrix (list)
     """
+
     return [[x[i] for x in matrix] for i in range(len(matrix[0]))]
 
 def reverse_y(matrix):
+
     """
     reverse y-axis of 2D matrix
     """
+
     return [list(reversed(matrix_i)) for matrix_i in matrix]
 
 def difference_RMS_images(
@@ -3031,8 +3087,8 @@ def difference_RMS_images(
     histogram_1 = PIL.Image.open(filename_1).histogram()
     histogram_2 = PIL.Image.open(filename_2).histogram()
     try:
-        RMS = math.sqrt(reduce(operator.add, map(
-            lambda a, b: (a - b)**2, histogram_1, histogram_2)) / len(histogram_1)
+        RMS = math.sqrt(reduce(operator.add, list(map(
+            lambda a, b: (a - b)**2, histogram_1, histogram_2))) / len(histogram_1)
         )
     except:
         RMS = None
@@ -3047,5 +3103,4 @@ def NumPy_array_pad_square_shape(
     padding      = (width_padded ** 2 - len(array)) * [pad_value]
     array        = numpy.append(array, padding)
     array        = array.reshape(width_padded, width_padded)
-
     return array

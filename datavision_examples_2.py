@@ -26,11 +26,11 @@ def main():
         marker = "_o",
         plot_slope = False
     )
-    print plot.plot(
+    print(plot.plot(
         x,
         30. - y,
         marker = "_s"
-    )
+    ))
 
     pause("\nPress Enter to terminate.")
     print(chr(27) + "[2J")

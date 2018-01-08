@@ -53,7 +53,7 @@ def main(options):
     if not sys.stdin.isatty():
         input_stream_list = [line for line in sys.stdin]
         y = [float(element.strip()) for element in input_stream_list[0].split(",")]
-        x = range(0, len(y))
+        x = list(range(0, len(y)))
         plot = datavision.TTYFigure()
         tmp = plot.plot(x, y, marker = "_o")
         print(tmp)

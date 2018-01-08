@@ -39,7 +39,7 @@ def main():
         message = message
     ))
     message = str(message).replace("\n", "")
-    print "".join(str(element) for element in set(message))
+    print("".join(str(element) for element in set(message)))
 
     datavision.play_message_sounds(
         message = message,

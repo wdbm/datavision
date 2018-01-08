@@ -55,7 +55,7 @@ import propyte
 import shijian
 
 name    = "change_field_name_database_SQLite"
-version = "2017-04-19T1319Z"
+version = "2018-01-08T1912Z"
 logo    = None
 
 def access_database(
@@ -108,7 +108,7 @@ def main(options):
         entries_out = []
         for index, entry_in in enumerate(entries_in):
             entries_out.append(collections.OrderedDict(
-                (field_out if key == field_in else key, value) for key, value in entry_in.viewitems()
+                (field_out if key == field_in else key, value) for key, value in list(entry_in.items())
             ))
 
         print("save entries with field changed to database {filename}".format(
