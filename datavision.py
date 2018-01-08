@@ -58,7 +58,7 @@ import scipy.stats
 import shijian
 
 name    = "datavision"
-version = "2018-01-08T2025Z"
+version = "2018-01-08T2333Z"
 
 def access_database_SQLite(
     filename = "database.db"
